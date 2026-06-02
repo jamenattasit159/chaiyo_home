@@ -46,6 +46,14 @@ body {
     overflow-x: hidden;
 }
 
+/* === Premium Display Typography === */
+h1, h2, h3, h4, h5, h6, .navbar-brand, .section-title-orange, .section-header {
+    font-family: 'Outfit', 'Sarabun', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+}
+
 /* === Custom Scrollbar === */
 ::-webkit-scrollbar {
     width: 10px;

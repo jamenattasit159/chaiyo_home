@@ -166,8 +166,8 @@ if (strpos($logoData, 'uploads/') !== false && file_exists($logoData)) {
     <!-- Main Container -->
     <div class="container">
         <aside class="sidebar-menu-box" data-aos="fade-right">
-            <h3 style="font-size: 18px; color: var(--text); margin-bottom: 10px; padding-left: 10px; border-left: 4px solid var(--primary); font-weight: 800;">
-                เมนู
+            <h3 style="font-size: 18px; color: var(--text); margin-bottom: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-list-ul" style="color: var(--primary);"></i> เมนู
             </h3>
             <?php foreach ($sidebarButtons as $btn): ?>
                 <?php 

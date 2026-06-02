@@ -217,9 +217,9 @@ if (strpos($logoData, 'uploads/') !== false && file_exists($logoData)) {
 
                 <?php if (!empty($sidebarButtons)): ?>
                     <aside class="sidebar-menu-box">
-                        <h3
-                            style="font-size: 18px; color: #2c3e50; margin-bottom: 10px; padding-left: 10px; border-left: 4px solid #2c3e50;">
-                            เมนู</h3>
+                        <h3 style="font-size: 18px; color: var(--text); margin-bottom: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-list-ul" style="color: var(--primary);"></i> เมนู
+                        </h3>
                         <?php foreach ($sidebarButtons as $btn): ?>
                             <?php 
                             // เช็คว่าลิงก์ภายนอกหรือไม่ เพื่อเปิดแท็บใหม่เฉพาะลิงก์ภายนอก
