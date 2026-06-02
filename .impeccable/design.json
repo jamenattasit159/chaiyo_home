@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-02T07:36:30Z",
+  "title": "Design System: Chaiyo Home Portal",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Emerald Green",
+        "canonical": "#059669",
+        "tonalRamp": ["#022c1e", "#04563a", "#057e55", "#059669", "#10b981", "#6ee7b7", "#a7f3d0", "#ecfdf5"]
+      },
+      "secondary": {
+        "role": "secondary",
+        "displayName": "Deep Emerald",
+        "canonical": "#047857",
+        "tonalRamp": ["#02241a", "#034c37", "#04674a", "#047857", "#059669", "#34d399", "#86efac", "#f0fdf4"]
+      },
+      "accent": {
+        "role": "accent",
+        "displayName": "Mint Accent",
+        "canonical": "#10b981",
+        "tonalRamp": ["#064e3b", "#065f46", "#047857", "#059669", "#10b981", "#34d399", "#6ee7b7", "#a7f3d0"]
+      },
+      "neutral-bg": {
+        "role": "neutral",
+        "displayName": "Slate Background",
+        "canonical": "#f8fafc",
+        "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#cbd5e1", "#e2e8f0", "#f8fafc"]
+      },
+      "neutral-text": {
+        "role": "neutral",
+        "displayName": "Slate Text",
+        "canonical": "#1e293b",
+        "tonalRamp": ["#020617", "#0f172a", "#1e293b", "#334155", "#475569", "#94a3b8", "#cbd5e1", "#f1f5f9"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display Title",
+        "purpose": "Hero headers and page main title"
+      },
+      "body": {
+        "displayName": "Body Copy",
+        "purpose": "Main article text and information paragraphs"
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-sm",
+        "value": "0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05)",
+        "purpose": "Small card listings and announcements list details"
+      },
+      {
+        "name": "shadow-md",
+        "value": "0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -4px rgba(0,0,0,0.05)",
+        "purpose": "Sidebar components and director blocks container elements"
+      },
+      {
+        "name": "shadow-lg",
+        "value": "0 20px 25px -5px rgba(0,0,0,0.07), 0 8px 10px -6px rgba(0,0,0,0.07)",
+        "purpose": "Mobile toggle dropdown menus and popover modals"
+      }
+    ],
+    "motion": [
+      {
+        "name": "transition-smooth",
+        "value": "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Default transitions for interactive elements hover states"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "768px",
+        "purpose": "Collapsing navbar menu and grid structural shifts"
+      },
+      {
+        "name": "xs",
+        "value": "480px",
+        "purpose": "Scaling display headers to smaller sizes"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Read Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Round pill button used for navigating to detail screens",
+      "html": "<a href=\"#\" class=\"ds-btn-primary\">อ่านต่อ <svg class=\"ds-arrow-icon\" viewBox=\"0 0 24 24\"><path d=\"M5 12h14M12 5l7 7-7 7\"/></svg></a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 6px; background: #059669; color: #ffffff; font-family: Sarabun, sans-serif; font-weight: 700; font-size: 14px; text-decoration: none; padding: 10px 22px; border-radius: 50px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid transparent; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); } .ds-btn-primary:hover { background: #047857; transform: translateY(-2px); box-shadow: 0 8px 16px rgba(5, 150, 105, 0.2); } .ds-arrow-icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }"
+    },
+    {
+      "name": "Sidebar Menu Button",
+      "kind": "button",
+      "refersTo": "sidebar-button",
+      "description": "Navigation items for selecting internal custom pages",
+      "html": "<a href=\"#\" class=\"ds-sidebar-btn\"><span>นโยบายสำนักงาน</span><svg class=\"ds-chevron-icon\" viewBox=\"0 0 24 24\"><path d=\"M9 5l7 7-7 7\"/></svg></a>",
+      "css": ".ds-sidebar-btn { display: flex; justify-content: space-between; align-items: center; background: #ffffff; color: #1e293b; font-family: Sarabun, sans-serif; font-weight: 700; font-size: 14px; text-decoration: none; padding: 15px 20px; border-radius: 12px; border-left: 5px solid #059669; border-top: 1px solid rgba(226, 232, 240, 0.8); border-right: 1px solid rgba(226, 232, 240, 0.8); border-bottom: 1px solid rgba(226, 232, 240, 0.8); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02); } .ds-sidebar-btn:hover { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; transform: translateX(5px); border-left-color: #ffffff; border-top-color: transparent; border-right-color: transparent; border-bottom-color: transparent; } .ds-chevron-icon { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }"
+    },
+    {
+      "name": "Announcement Item Card",
+      "kind": "card",
+      "refersTo": "announcement-card",
+      "description": "Responsive card showcasing an announcement listing with date badge",
+      "html": "<div class=\"ds-list-item\"><div class=\"ds-list-date\"><span class=\"ds-day\">02</span><span class=\"ds-month\">JUN</span></div><div class=\"ds-list-info\"><a href=\"#\" class=\"ds-list-title\">ประกาศกิจกรรมการดูแลสุขภาพชุมชน</a><div class=\"ds-list-meta\">02/06/2026</div></div></div>",
+      "css": ".ds-list-item { display: flex; align-items: center; background: #ffffff; padding: 24px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); border: 1px solid rgba(226, 232, 240, 0.8); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); } .ds-list-item:hover { transform: translateY(-4px) scale(1.01); border-color: #059669; box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05); } .ds-list-date { background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%); color: #059669; padding: 12px; border-radius: 16px; text-align: center; min-width: 80px; margin-right: 24px; border: 2px solid #d1fae5; font-family: Outfit, sans-serif; } .ds-day { display: block; font-size: 26px; font-weight: 800; line-height: 1; color: #047857; } .ds-month { display: block; font-size: 11px; text-transform: uppercase; font-weight: 700; margin-top: 4px; } .ds-list-info { flex-grow: 1; font-family: Sarabun, sans-serif; } .ds-list-title { text-decoration: none; color: #1e293b; font-weight: 800; font-size: 17px; display: block; margin-bottom: 6px; transition: color 0.2s; } .ds-list-title:hover { color: #059669; } .ds-list-meta { font-size: 13px; color: #64748b; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Civic Portal",
+    "overview": "\"The Civic Portal\" มุ่งมั่นสร้างสรรค์ประสบการณ์การใช้งานที่ส่งผ่านความเชื่อมั่น ความชัดเจน และการเข้าถึงง่ายของระบบบริการประชาชน โดยลดความทับซ้อนและจัดลำดับสายตา (Visual Hierarchy) ของข้อมูลสาธารณสุขให้เป็นระบบ ดีไซน์นี้จะปฏิเสธหน้าตาแบบดั้งเดิมของหน่วยงานราชการที่เต็มไปด้วยความอัดแน่น ความสับสนของสี และการทับซ้อนของเลเยอร์ โดยเน้นความสะอาดตา ข้อมูลที่จัดวางสัดส่วนลงตัว และการตอบสนองที่ลื่นไหลในโทรศัพท์มือถือ",
+    "keyCharacteristics": [
+      "สะอาดและสว่างตา (Bright & Clean): เน้นใช้สีขาวและสีพื้นหลังโทนอ่อนเพื่อส่งเสริมความโปร่งใสและสบายตาในการอ่านข้อมูล",
+      "จัดวางข้อมูลเป็นระบบ (Well-structured): แบ่งสัดส่วนข้อมูลประชาสัมพันธ์ ประกาศทั่วไป และปุ่มเมนูดาวน์โหลดอย่างเป็นระเบียบชัดเจน",
+      "ตอบสนองบนมือถือเป็นเยี่ยม (Mobile-first Touchability): ทุกปุ่มสัมผัส การ์ด และเมนูดรอบดาวน์ในโทรศัพท์มือถือต้องใช้งานง่าย รวดเร็ว และไม่มีการทับซ้อน"
+    ],
+    "rules": [
+      {
+        "name": "The Emerald Rareness Rule",
+        "body": "สีหลัก (Primary Emerald) จะไม่ถูกใช้อย่างฟุ่มเฟือยบนหน้าจอ โดยจะจำกัดพื้นที่ไม่เกิน 15% บนหน้าเพจเพื่อรักษาความโดดเด่นและนำทางสายตาประชาชนไปยังสิ่งที่ต้องการได้แม่นยำที่สุด",
+        "section": "colors"
+      },
+      {
+        "name": "The Legend Font Rule",
+        "body": "ห้ามผสมแบบอักษรอื่นเกิน 2 ชนิดหลักเข้ามาใช้ในหน้านี้ และห้ามใช้ฟอนต์ตัวหนา (Bold) บนตัวอักษรขนาดเนื้อหาหลัก (Body) เกินความจำเป็นเพื่อรักษาความสะอาดตา",
+        "section": "typography"
+      },
+      {
+        "name": "The Active Hover Lift Rule",
+        "body": "การ์ดและปุ่มที่มีเงาที่จับต้องได้จะเลื่อนตัวขึ้นด้านบนเล็กน้อย (transform: translateY(-4px)) เมื่อถูกชี้สัมผัส เพื่อแจ้งทางปฏิสัมพันธ์แก่สายตาผู้ใช้",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do รักษาค่าระดับ Contrast ของตัวอักษรเนื้อหาหลักให้อยู่ในระดับสูง (เช่น Slate Text บนพื้นขาว) เสมอ เพื่อให้อ่านออกง่ายที่สุด",
+      "Do ใช้ระยะขอบมน 12px ถึง 24px เป็นสัดส่วนหลักในการ์ดและองค์ประกอบต่าง ๆ เพื่อความอบอุ่นและทันสมัย",
+      "Do กำหนดระดับ z-index ขององค์ประกอบที่มีสัดส่วนปฏิสัมพันธ์ในโทรศัพท์มือถือ (เช่น เมนูด้านข้าง) ให้ลอยเด่นชัดอยู่แถวหน้าสุดเพื่อป้องกันการบล็อกปุ่มสัมผัส"
+    ],
+    "donts": [
+      "Don't ใช้เส้นขอบเน้นสีข้างการ์ด (border-left/right) หนาเกินกว่า 5px เป็นสีสลัวเด็ดขาด (ให้ยกเว้นเฉพาะการตกแต่ง sidebar-btn ที่เป็นสีหลักของแบรนด์เท่านั้น)",
+      "Don't ตกแต่งข้อความด้วยเฉดสีแบบ Gradient เพราะจะทำให้การอ่านบทความภาษาไทยของผู้สูงอายุเป็นไปได้ยาก",
+      "Don't ให้ขนาดความกว้างของหัวข้อเด่นยาวเกินขนาดกรอบแสดงผลของมือถือเด็ดขาด (ต้องปรับขนาดหัวข้อ responsively ลงในหน้าจอมือถืออยู่เสมอ)"
+    ]
+  }
+}

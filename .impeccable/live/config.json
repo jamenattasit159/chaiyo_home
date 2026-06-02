@@ -1,0 +1,11 @@
+{
+  "files": [
+    "index.php",
+    "page.php",
+    "personnel.php",
+    "announcement.php"
+  ],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}
