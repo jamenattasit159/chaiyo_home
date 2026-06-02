@@ -20,6 +20,12 @@ if (!$page) {
 // ... (ส่วนที่เหลือเหมือนเดิมทุกประการ) ...
 $orgInfo = $pdo->query("SELECT * FROM organization_info LIMIT 1")->fetch();
 $sidebarButtons = $pdo->query("SELECT * FROM sidebar_buttons WHERE status='active' ORDER BY sort_order ASC")->fetchAll();
+
+$logoData = $orgInfo['logo'] ?? '🏥';
+$isLogoFile = false;
+if (strpos($logoData, 'uploads/') !== false && file_exists($logoData)) {
+    $isLogoFile = true;
+}
 ?>
 
 <!DOCTYPE html>
@@ -31,72 +37,10 @@ $sidebarButtons = $pdo->query("SELECT * FROM sidebar_buttons WHERE status='activ
     <title><?php echo htmlspecialchars($page['title']); ?> - <?php echo htmlspecialchars($orgInfo['name']); ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <style>
-        /* CSS พื้นฐาน เหมือนหน้า Index */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #059669;
-            --secondary: #047857;
-            --accent: #10b981;
-            --light-green: #d1fae5;
-            --lighter-green: #f0fdf4;
-            --text: #1f2937;
-            --text-gray: #6b7280;
-            --white: #ffffff;
-            --border: #e5e7eb;
-            --shadow-sm: 0 2px 8px rgba(5, 150, 105, 0.08);
-            --shadow-md: 0 4px 12px rgba(5, 150, 105, 0.12);
-            --shadow-lg: 0 8px 24px rgba(5, 150, 105, 0.15);
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/index.css">
     <?php echo get_theme_style_block($pdo); ?>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--light);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 15px 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .navbar-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .back-btn {
-            color: white;
-            text-decoration: none;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        /* Layout */
+        /* page.php Layout Styles */
         .container {
             max-width: 1200px;
             margin: 40px auto;
@@ -107,34 +51,38 @@ $sidebarButtons = $pdo->query("SELECT * FROM sidebar_buttons WHERE status='activ
             align-items: start;
         }
 
-        /* Content Area */
         .content-card {
             background: white;
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-radius: 24px;
+            box-shadow: var(--shadow-md);
             min-height: 500px;
+            border: 1px solid var(--border);
         }
 
         .content-card h1 {
             font-size: 28px;
-            color: #2c3e50;
-            border-bottom: 2px solid #eee;
+            color: var(--text);
+            border-bottom: 2px solid var(--border);
             padding-bottom: 15px;
             margin-bottom: 25px;
+            font-weight: 800;
         }
 
         .page-body {
             font-size: 16px;
-            color: #444;
+            color: var(--text);
             line-height: 1.8;
         }
 
-        /* Sidebar Buttons */
+        /* Mobile Touch & Clickability Fixes */
         .sidebar-menu-box {
             display: flex;
             flex-direction: column;
             gap: 10px;
+            pointer-events: auto !important;
+            position: relative !important;
+            z-index: 50 !important;
         }
 
         .sidebar-btn {
@@ -142,35 +90,38 @@ $sidebarButtons = $pdo->query("SELECT * FROM sidebar_buttons WHERE status='activ
             justify-content: space-between;
             align-items: center;
             background: white;
-            color: #333;
+            color: var(--text);
             padding: 15px 20px;
-            border-radius: 8px;
+            border-radius: 12px;
             text-decoration: none;
-            font-weight: 600;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            font-weight: 700;
+            box-shadow: var(--shadow-sm);
             border-left: 5px solid var(--primary);
-            transition: all 0.3s;
+            transition: var(--transition);
+            pointer-events: auto !important;
+            position: relative !important;
+            z-index: 51 !important;
+            cursor: pointer;
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
         }
 
         .sidebar-btn:hover {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
             transform: translateX(5px);
             border-left-color: white;
-        }
-
-        /* Footer */
-        footer {
-            background: #2c3e50;
-            color: white;
-            padding: 40px 0;
-            margin-top: 60px;
-            text-align: center;
+            border-top-color: transparent;
+            border-right-color: transparent;
+            border-bottom-color: transparent;
         }
 
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
+                margin: 20px auto;
+                gap: 20px;
             }
 
             .sidebar-menu-box {
@@ -179,6 +130,7 @@ $sidebarButtons = $pdo->query("SELECT * FROM sidebar_buttons WHERE status='activ
 
             .content-card {
                 order: 1;
+                padding: 24px;
             }
         }
     </style>
@@ -186,18 +138,37 @@ $sidebarButtons = $pdo->query("SELECT * FROM sidebar_buttons WHERE status='activ
 
 <body>
 
+    <!-- Unified Glassmorphism Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
-            <h1 style="font-size: 20px; margin:0;"><?php echo htmlspecialchars($orgInfo['name']); ?></h1>
-            <a href="index.php" class="back-btn"><i class="fas fa-home"></i> หน้าหลัก</a>
+            <a href="index.php" class="navbar-brand">
+                <?php if ($isLogoFile): ?>
+                    <img src="<?php echo $logoData; ?>" alt="Logo" class="navbar-logo-img">
+                <?php else: ?>
+                    <span style="font-size: 28px;"><?php echo $logoData; ?></span>
+                <?php endif; ?>
+                <span><?php echo sanitize($orgInfo['name'] ?? 'สถาบันอุตสาหกรรมสุขภาพ'); ?></span>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.php#home"><i class="fas fa-home"></i> หน้าแรก</a></li>
+                <li><a href="index.php#pr"><i class="fas fa-bullhorn"></i> ประชาสัมพันธ์</a></li>
+                <li><a href="index.php#directors"><i class="fas fa-users"></i> ผู้บริหาร</a></li>
+                <li><a href="index.php#news"><i class="fas fa-newspaper"></i> ประกาศทั่วไป</a></li>
+                <li><a href="admin/login.php"><i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ</a></li>
+            </ul>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </div>
         </div>
     </nav>
 
+    <!-- Main Container -->
     <div class="container">
         <aside class="sidebar-menu-box" data-aos="fade-right">
-            <h3
-                style="font-size: 18px; color: #2c3e50; margin-bottom: 10px; padding-left: 10px; border-left: 4px solid #2c3e50;">
-                เมนู</h3>
+            <h3 style="font-size: 18px; color: var(--text); margin-bottom: 10px; padding-left: 10px; border-left: 4px solid var(--primary); font-weight: 800;">
+                เมนู
+            </h3>
             <?php foreach ($sidebarButtons as $btn): ?>
                 <?php 
                 // เช็คว่าลิงก์ภายนอกหรือไม่ เพื่อเปิดแท็บใหม่เฉพาะลิงก์ภายนอก
@@ -215,19 +186,90 @@ $sidebarButtons = $pdo->query("SELECT * FROM sidebar_buttons WHERE status='activ
             <div class="page-body">
                 <?php echo $page['content']; ?>
             </div>
-            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #999;">
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-gray);">
                 แก้ไขล่าสุด: <?php echo date('d/m/Y H:i', strtotime($page['updated_at'])); ?>
             </div>
         </main>
     </div>
 
+    <!-- Unified Premium Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>เกี่ยวกับเรา</h3>
+                <p><?php echo sanitize($orgInfo['description'] ?? ''); ?></p>
+            </div>
+            <div class="footer-section">
+                <h3>📞 ติดต่อเรา</h3>
+                <ul>
+                    <?php if ($orgInfo && $orgInfo['phone']): ?>
+                        <li>
+                            <a href="tel:<?php echo htmlspecialchars($orgInfo['phone']); ?>">
+                                <i class="fas fa-phone" style="margin-right: 8px;"></i>
+                                <?php echo sanitize($orgInfo['phone']); ?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php if ($orgInfo && $orgInfo['email']): ?>
+                        <li>
+                            <a href="mailto:<?php echo htmlspecialchars($orgInfo['email']); ?>">
+                                <i class="fas fa-envelope" style="margin-right: 8px;"></i>
+                                <?php echo sanitize($orgInfo['email']); ?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php if ($orgInfo && $orgInfo['address']): ?>
+                        <li>
+                            <a href="https://maps.google.com/?q=<?php echo urlencode($orgInfo['address']); ?>"
+                                target="_blank">
+                                <i class="fas fa-location-dot" style="margin-right: 8px;"></i>
+                                <?php echo sanitize($orgInfo['address']); ?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>เมนูด่วน</h3>
+                <ul>
+                    <li><a href="index.php#home">หน้าแรก</a></li>
+                    <li><a href="index.php#pr">ประชาสัมพันธ์</a></li>
+                    <li><a href="index.php#news">ประกาศ</a></li>
+                    <li><a href="admin/login.php">สำหรับเจ้าหน้าที่</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025
+                <?php if ($isLogoFile): ?>
+                    <img src="<?php echo $logoData; ?>" alt="Logo"
+                        style="height: 30px; width: auto; vertical-align: middle; margin-right: 5px; border-radius: 4px;">
+                <?php else: ?>
+                    <span style="margin-right: 5px;"><?php echo $logoData; ?></span>
+                <?php endif; ?>
+                <?php echo sanitize($orgInfo['name'] ?? 'สถาบันอุตสาหกรรมสุขภาพ'); ?>. All rights reserved.
+            </p>
+        </div>
     </footer>
 
+    <!-- AOS & Mobile Navigation Toggle Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({
             duration: 800,
             once: true
+        });
+
+        function toggleMenu() {
+            const menu = document.querySelector('.nav-menu');
+            menu.classList.toggle('active');
+        }
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.nav-menu').classList.remove('active');
+            });
         });
     </script>
 </body>

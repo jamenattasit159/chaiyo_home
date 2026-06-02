@@ -146,11 +146,11 @@ if (strpos($logoData, 'uploads/') !== false && file_exists($logoData)) {
             </a>
 
             <ul class="nav-menu">
-                <li><a href="#home">หน้าแรก</a></li>
-                <li><a href="#pr">ประชาสัมพันธ์</a></li>
-                <li><a href="#directors">ผู้บริหาร</a></li>
-                <li><a href="#news">ประกาศทั่วไป</a></li>
-                <li><a href="admin/login.php">เข้าสู่ระบบ</a></li>
+                <li><a href="#home"><i class="fas fa-home"></i> หน้าแรก</a></li>
+                <li><a href="#pr"><i class="fas fa-bullhorn"></i> ประชาสัมพันธ์</a></li>
+                <li><a href="#directors"><i class="fas fa-users"></i> ผู้บริหาร</a></li>
+                <li><a href="#news"><i class="fas fa-newspaper"></i> ประกาศทั่วไป</a></li>
+                <li><a href="admin/login.php"><i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ</a></li>
             </ul>
             <div class="hamburger" onclick="toggleMenu()">
                 <span></span><span></span><span></span>

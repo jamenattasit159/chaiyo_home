@@ -477,9 +477,9 @@ body {
     font-size: 32px;
     font-weight: 800;
     position: relative;
-    display: inline-block;
-    left: 50%;
-    transform: translateX(-50%);
+    display: block;
+    width: 100%;
+    word-wrap: break-word;
 }
 
 .section-title-orange i {
@@ -763,24 +763,45 @@ footer {
         top: 100%;
         left: 0;
         right: 0;
-        background: rgba(255, 255, 255, 0.98);
+        background: rgba(255, 255, 255, 0.96); /* สีขาวทึบพรีเมียม 96% ป้องกันภาพสไลด์บดบังตัวอักษร */
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         flex-direction: column;
-        gap: 0;
-        padding: 20px;
+        gap: 8px;
+        padding: 24px;
         width: 100%;
-        box-shadow: var(--shadow-lg);
-        border-top: 1px solid var(--border);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12); /* เพิ่มความลึกของเงาให้ลอยมิติพรีเมียม */
+        border-top: 1px solid rgba(255, 255, 255, 0.5);
+        border-bottom: 4px solid var(--primary); /* แถบไฮไลต์สีหลักของธีมด้านล่างของเมนูดรอปดาวน์ */
+        border-radius: 0 0 24px 24px; /* โค้งมนสวยงามรับกับดีไซน์ */
+        z-index: 9999; /* บังคับอยู่หน้าสุดอย่างสมบูรณ์ */
     }
 
     .nav-menu.active {
         display: flex;
+        animation: slideDownMenu 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     .nav-menu a {
         width: 100%;
-        text-align: center;
-        padding: 14px;
-        border-radius: 12px;
+        text-align: left;
+        padding: 14px 20px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-left: 4px solid transparent;
+        transition: var(--transition);
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--text);
+    }
+
+    .nav-menu a:hover {
+        background: var(--light-green);
+        color: var(--primary);
+        border-left-color: var(--primary);
+        transform: translateX(6px);
     }
 
     .banner-item {
@@ -788,7 +809,7 @@ footer {
     }
 
     .section-title-orange {
-        font-size: 26px;
+        font-size: 24px;
     }
 
     .pr-list-large {
@@ -833,5 +854,24 @@ footer {
 
     .container {
         padding: 0 16px;
+    }
+}
+
+/* === Animations & Small Mobile Overrides === */
+@keyframes slideDownMenu {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .section-title-orange {
+        font-size: 20px !important;
+        margin-bottom: 25px;
     }
 }
