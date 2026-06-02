@@ -30,11 +30,11 @@ try {
 
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
     <div>
-        <h1 class="text-3xl font-black text-base-content flex items-center gap-2">👋 ยินดีต้อนรับ, <?php echo htmlspecialchars($_SESSION['username']); ?></h1>
-        <p class="text-base-content/60 mt-1">ยินดีต้อนรับเข้าสู่ระบบจัดการและควบคุมเว็บไซต์อย่างเป็นทางการ</p>
+        <h1 class="text-3xl font-black text-base-content flex items-center gap-2 tracking-tight">👋 ยินดีต้อนรับ, <?php echo htmlspecialchars($_SESSION['username']); ?></h1>
+        <p class="text-base-content/60 mt-1 max-w-[65ch] leading-relaxed">ยินดีต้อนรับเข้าสู่ระบบจัดการและควบคุมเว็บไซต์อย่างเป็นทางการ</p>
     </div>
     <div class="badge badge-neutral font-bold py-3.5 px-4 text-xs gap-2">
-        <i class="fa-regular fa-clock"></i> <span><?php echo date('วันที่ d/m/Y เวลา H:i:s', time()); ?></span>
+        <i class="fa-regular fa-clock"></i> <span class="tabular-nums"><?php echo date('วันที่ d/m/Y เวลา H:i:s', time()); ?></span>
     </div>
 </div>
 
@@ -43,9 +43,9 @@ try {
     <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow stagger-card" style="--stagger: 1;">
         <div class="card-body p-6 flex flex-row items-center justify-between">
             <div>
-                <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">ภาพแบนเนอร์</span>
-                <span class="text-3xl font-black text-primary block mt-1"><?php echo $bannerCount; ?></span>
-                <a href="?page=banners" class="link link-primary link-hover text-xs font-bold block mt-2">จัดการแบนเนอร์ →</a>
+                 <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">ภาพแบนเนอร์</span>
+                 <span class="text-3xl font-black text-primary block mt-1 tabular-nums tracking-tight"><?php echo $bannerCount; ?></span>
+                 <a href="?page=banners" class="link link-primary link-hover text-xs font-bold block mt-2 tracking-wide">จัดการแบนเนอร์ →</a>
             </div>
             <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary text-2xl">📸</div>
         </div>
@@ -54,9 +54,9 @@ try {
     <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow stagger-card" style="--stagger: 2;">
         <div class="card-body p-6 flex flex-row items-center justify-between">
             <div>
-                <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">คณะผู้บริหาร</span>
-                <span class="text-3xl font-black text-secondary block mt-1"><?php echo $directorCount; ?></span>
-                <a href="?page=directors" class="link link-secondary link-hover text-xs font-bold block mt-2">จัดการบุคลากร →</a>
+                 <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">คณะผู้บริหาร</span>
+                 <span class="text-3xl font-black text-secondary block mt-1 tabular-nums tracking-tight"><?php echo $directorCount; ?></span>
+                 <a href="?page=directors" class="link link-secondary link-hover text-xs font-bold block mt-2 tracking-wide">จัดการบุคลากร →</a>
             </div>
             <div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary text-2xl">👔</div>
         </div>
@@ -65,9 +65,9 @@ try {
     <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow stagger-card" style="--stagger: 3;">
         <div class="card-body p-6 flex flex-row items-center justify-between">
             <div>
-                <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">ประกาศเผยแพร่</span>
-                <span class="text-3xl font-black text-accent block mt-1"><?php echo $announcementCount; ?></span>
-                <a href="?page=announcements" class="link link-accent link-hover text-xs font-bold block mt-2">จัดการประกาศ →</a>
+                 <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">ประกาศเผยแพร่</span>
+                 <span class="text-3xl font-black text-accent block mt-1 tabular-nums tracking-tight"><?php echo $announcementCount; ?></span>
+                 <a href="?page=announcements" class="link link-accent link-hover text-xs font-bold block mt-2 tracking-wide">จัดการประกาศ →</a>
             </div>
             <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-accent text-2xl">📢</div>
         </div>
@@ -76,9 +76,9 @@ try {
     <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow stagger-card" style="--stagger: 4;">
         <div class="card-body p-6 flex flex-row items-center justify-between">
             <div>
-                <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">ไฟล์ในระบบ</span>
-                <span class="text-3xl font-black text-info block mt-1"><?php echo $fileCount; ?></span>
-                <a href="?page=files" class="link link-info link-hover text-xs font-bold block mt-2">จัดการไฟล์ →</a>
+                 <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">ไฟล์ในระบบ</span>
+                 <span class="text-3xl font-black text-info block mt-1 tabular-nums tracking-tight"><?php echo $fileCount; ?></span>
+                 <a href="?page=files" class="link link-info link-hover text-xs font-bold block mt-2 tracking-wide">จัดการไฟล์ →</a>
             </div>
             <div class="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center text-info text-2xl">📄</div>
         </div>
@@ -89,8 +89,8 @@ try {
 <div class="card bg-gradient-to-r from-primary to-secondary text-primary-content shadow-xl mb-8 border-none overflow-hidden relative stagger-card" style="--stagger: 5;">
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent)] pointer-events-none"></div>
     <div class="card-body p-8 relative z-10">
-        <h2 class="card-title text-2xl font-black flex items-center gap-2"><i class="fa-solid fa-bolt text-warning animate-bounce"></i> ทางลัดการจัดการข้อมูล (Quick Links)</h2>
-        <p class="text-white/80 text-sm max-w-xl">เข้าถึงส่วนการบริหารจัดการข้อมูลของระบบหลักได้อย่างสะดวกรวดเร็วในคลิกเดียว</p>
+        <h2 class="card-title text-2xl font-black flex items-center gap-2 tracking-tight"><i class="fa-solid fa-bolt text-warning animate-bounce"></i> ทางลัดการจัดการข้อมูล (Quick Links)</h2>
+        <p class="text-white/80 text-sm max-w-[65ch] leading-relaxed">เข้าถึงส่วนการบริหารจัดการข้อมูลของระบบหลักได้อย่างสะดวกรวดเร็วในคลิกเดียว</p>
         <div class="card-actions justify-start gap-3 mt-6">
             <a href="?page=banners" class="btn bg-white/20 hover:bg-white/30 text-white border-none rounded-xl gap-2 font-bold"><i class="fa-solid fa-images"></i> จัดการแบนเนอร์</a>
             <a href="?page=directors" class="btn bg-white/20 hover:bg-white/30 text-white border-none rounded-xl gap-2 font-bold"><i class="fa-solid fa-user-tie"></i> ข้อมูลผู้บริหาร</a>
@@ -116,9 +116,9 @@ try {
                             <div class="py-3 flex justify-between items-center gap-4 hover:bg-base-200/40 px-2 rounded-lg transition-colors">
                                 <div class="flex flex-col gap-1 min-w-0">
                                     <span class="font-bold text-base-content/90 line-clamp-1 text-sm"><?php echo htmlspecialchars($announce['title']); ?></span>
-                                    <span class="text-xs text-base-content/50 flex items-center gap-1"><i class="fa-regular fa-calendar"></i> เผยแพร่เมื่อ: <?php echo date('d/m/Y H:i', strtotime($announce['created_at'])); ?></span>
+                                    <span class="text-xs text-base-content/50 flex items-center gap-1"><i class="fa-regular fa-calendar"></i> เผยแพร่เมื่อ: <span class="tabular-nums"><?php echo date('d/m/Y H:i', strtotime($announce['created_at'])); ?></span></span>
                                 </div>
-                                <div class="badge badge-success text-white font-bold text-[10px] uppercase py-2 px-2.5">Active</div>
+                                <div class="badge badge-success text-white font-bold text-[10px] uppercase py-2 px-2.5 tracking-wider">Active</div>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -164,8 +164,8 @@ try {
                                         <?php echo htmlspecialchars($file['filename']); ?>
                                     </span>
                                     <span class="text-xs text-base-content/50 flex items-center gap-3">
-                                        <span><i class="fa-regular fa-calendar"></i> <?php echo date('d/m/Y', strtotime($file['created_at'])); ?></span>
-                                        <span class="badge badge-ghost badge-sm text-[9px] uppercase font-bold py-1.5 px-2"><?php echo htmlspecialchars($file['category']); ?></span>
+                                        <span><i class="fa-regular fa-calendar"></i> <span class="tabular-nums"><?php echo date('d/m/Y', strtotime($file['created_at'])); ?></span></span>
+                                        <span class="badge badge-ghost badge-sm text-[9px] uppercase font-bold py-1.5 px-2 tracking-wider"><?php echo htmlspecialchars($file['category']); ?></span>
                                     </span>
                                 </div>
                             </div>
