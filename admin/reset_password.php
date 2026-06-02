@@ -105,6 +105,12 @@ if ($valid_token && $token_data) {
     <style type="text/tailwindcss">
       @theme {
         --font-sans: 'Sarabun', 'Outfit', sans-serif;
+        --font-display: 'Outfit', 'Sarabun', sans-serif;
+      }
+      h1, h2, h3, h4, h5, h6, .stat-value, .stat-title, .menu-title, .badge, .font-display {
+        font-family: var(--font-display);
+        font-weight: 800;
+        letter-spacing: -0.02em;
       }
     </style>
 </head>
