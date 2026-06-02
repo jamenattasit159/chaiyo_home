@@ -79,7 +79,15 @@ $currentLogo = $orgInfo['logo'] ?? '🏥';
 $isCustomLogo = strpos($currentLogo, 'uploads/') !== false;
 ?>
 
-<h2 class="text-3xl font-black text-base-content flex items-center gap-2 mb-6">🏢 จัดการข้อมูลหน่วยงาน</h2>
+<!-- หัวข้อของหน้า -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+        <h2 class="text-2xl font-extrabold text-base-content flex items-center gap-2.5">
+            <i class="fas fa-building text-primary"></i> จัดการข้อมูลหน่วยงาน
+        </h2>
+        <p class="text-sm text-base-content/60 mt-1">บริหารจัดการชื่อ ตราสัญลักษณ์ นโยบาย วิสัยทัศน์ ข้อมูลติดต่อ และแผนที่ของหน่วยงาน</p>
+    </div>
+</div>
 
 <?php if ($message): ?>
     <div class="mb-6">

@@ -70,7 +70,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 $banners = $pdo->query("SELECT * FROM banners ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<h2 class="text-3xl font-black text-base-content flex items-center gap-2 mb-6">📸 จัดการแบนเนอร์สไลด์</h2>
+<!-- หัวข้อของหน้า -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+        <h2 class="text-2xl font-extrabold text-base-content flex items-center gap-2.5">
+            <i class="fas fa-images text-primary"></i> จัดการแบนเนอร์สไลด์
+        </h2>
+        <p class="text-sm text-base-content/60 mt-1">บริหารจัดการภาพแบนเนอร์สไลด์หน้าแรก อัปโหลดรูปภาพใหม่ และควบคุมการแสดงผลของหน้าเว็บไซต์หลัก</p>
+    </div>
+</div>
 
 <?php if ($message): ?>
     <div class="mb-6">

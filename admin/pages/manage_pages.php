@@ -81,7 +81,15 @@ if (isset($_GET['edit'])) {
 $pages = $pdo->query("SELECT * FROM custom_pages ORDER BY updated_at DESC")->fetchAll();
 ?>
 
-<h2 class="text-3xl font-black text-base-content flex items-center gap-2 mb-6">📝 จัดการหน้าเนื้อหา (Custom Pages)</h2>
+<!-- หัวข้อของหน้า -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+        <h2 class="text-2xl font-extrabold text-base-content flex items-center gap-2.5">
+            <i class="fas fa-file-signature text-primary"></i> จัดการหน้าเนื้อหาหลัก (Custom Pages)
+        </h2>
+        <p class="text-sm text-base-content/60 mt-1">สร้าง แก้ไข และจัดการหน้าเนื้อหาเฉพาะกิจของเว็บไซต์ เช่น หน้านโยบาย ประวัติ หรือข้อมูลสารสนเทศที่กำหนดเอง</p>
+    </div>
+</div>
 
 <?php if ($message): ?>
     <div class="mb-6">
