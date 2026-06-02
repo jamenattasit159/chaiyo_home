@@ -1,7 +1,10 @@
 <?php
 // admin/pages/manage_pages.php
-if (!isset($_SESSION['admin_id']))
+
+if (!isset($_SESSION['admin_id'])) {
     header('Location: ../login.php');
+    exit;
+}
 
 $message = '';
 $popupScript = ''; // ตัวแปรสำหรับเก็บ script popup
@@ -22,14 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt = $pdo->prepare("UPDATE custom_pages SET title=?, content=? WHERE id=?");
             $stmt->execute([$title, $content, $id]);
             $savedId = $id;
-            $message = '<div class="alert alert-success">✓ บันทึกแก้ไขเรียบร้อย</div>';
+            $message = '<div class="alert alert-success gap-2 py-3 px-5 rounded-xl text-sm font-semibold mb-5 text-white shadow-md border-none"><i class="fa-solid fa-circle-check"></i> <span>บันทึกการแก้ไขเรียบร้อยแล้ว</span></div>';
         } else {
             $stmt = $pdo->prepare("INSERT INTO custom_pages (title, content) VALUES (?, ?)");
             $stmt->execute([$title, $content]);
             $savedId = $pdo->lastInsertId();
 
             // *** จุดสำคัญ: สร้าง Script Popup ถาม user ***
-            // ส่งค่า ID และ Title ไปให้ JavaScript
             $encodedId = encode_id($savedId); // เข้ารหัส ID ก่อนส่ง
             $safeTitle = htmlspecialchars($title, ENT_QUOTES);
 
@@ -43,13 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </script>
             ";
 
-            $message = '<div class="alert alert-success">✓ สร้างหน้าใหม่เรียบร้อย</div>';
+            $message = '<div class="alert alert-success gap-2 py-3 px-5 rounded-xl text-sm font-semibold mb-5 text-white shadow-md border-none"><i class="fa-solid fa-circle-check"></i> <span>สร้างหน้าเพจใหม่เรียบร้อยแล้ว</span></div>';
         }
     }
     // 2. ลบหน้าเพจ
     elseif ($action == 'delete') {
         $pdo->prepare("DELETE FROM custom_pages WHERE id=?")->execute([$_POST['id']]);
-        $message = '<div class="alert alert-success">✓ ลบหน้าเพจเรียบร้อย</div>';
+        $message = '<div class="alert alert-success gap-2 py-3 px-5 rounded-xl text-sm font-semibold mb-5 text-white shadow-md border-none"><i class="fa-solid fa-circle-check"></i> <span>ลบหน้าเพจเรียบร้อยแล้ว</span></div>';
     }
 }
 
@@ -66,7 +68,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'auto_create_btn') {
     $stmt = $pdo->prepare("INSERT INTO sidebar_buttons (name, link, sort_order) VALUES (?, ?, ?)");
     $stmt->execute([$btnTitle, $link, $newOrder]);
 
-    $message = '<div class="alert alert-success">✓ สร้างปุ่มเมนูและผูกลิ้งค์ให้เรียบร้อยแล้ว!</div>';
+    $message = '<div class="alert alert-success gap-2 py-3 px-5 rounded-xl text-sm font-semibold mb-5 text-white shadow-md border-none"><i class="fa-solid fa-circle-check"></i> <span>สร้างปุ่มเมนูและผูกลิงก์เรียบร้อยแล้ว!</span></div>';
 }
 
 // ดึงข้อมูลแก้ไข
@@ -79,85 +81,139 @@ if (isset($_GET['edit'])) {
 $pages = $pdo->query("SELECT * FROM custom_pages ORDER BY updated_at DESC")->fetchAll();
 ?>
 
-<h2>📝 จัดการหน้าเนื้อหา (Custom Pages)</h2>
-<?php echo $message; ?>
+<h2 class="text-3xl font-black text-base-content flex items-center gap-2 mb-6">📝 จัดการหน้าเนื้อหา (Custom Pages)</h2>
+
+<?php if ($message): ?>
+    <div class="mb-6">
+        <?php echo $message; ?>
+    </div>
+<?php endif; ?>
 <?php echo $popupScript; // แสดง Popup ถ้ามีการบันทึกใหม่ ?>
 
-<div class="admin-form">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h3><?php echo $editData ? 'แก้ไขหน้าเพจ' : 'สร้างหน้าเพจใหม่'; ?></h3>
-        <button type="button" onclick="loadTemplate()" class="btn btn-secondary"
-            style="background: #64748b; color: white; font-size: 13px;">
-            <i class="fas fa-magic"></i> โหลดตัวอย่าง (วิสัยทัศน์)
-        </button>
+<!-- ฟอร์มสร้าง/แก้ไขหน้าเพจ -->
+<div class="card bg-base-100 shadow-xl border border-base-200 mb-8">
+    <div class="card-body p-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-base-200 pb-4">
+            <h3 class="text-xl font-bold text-primary flex items-center gap-2 m-0">
+                <i class="fa-solid fa-file-pen"></i> <?php echo $editData ? 'แก้ไขหน้าเพจเนื้อหา' : 'สร้างหน้าเพจเนื้อหาใหม่'; ?>
+            </h3>
+            <button type="button" onclick="loadTemplate()" class="btn btn-neutral btn-sm rounded-xl gap-2 font-bold bg-base-300 border-none text-base-content hover:bg-base-200">
+                <i class="fa-solid fa-wand-magic-sparkles text-primary"></i> โหลดตัวอย่างแม่แบบ (วิสัยทัศน์)
+            </button>
+        </div>
+
+        <form method="POST" class="flex flex-col gap-6">
+            <input type="hidden" name="action" value="save">
+            <?php if ($editData): ?><input type="hidden" name="id" value="<?php echo $editData['id']; ?>"><?php endif; ?>
+
+            <div class="form-control w-full">
+                <label class="label"><span class="label-text font-bold text-xs uppercase text-base-content/60">หัวข้อหน้าเพจ *</span></label>
+                <input type="text" name="title" value="<?php echo htmlspecialchars($editData['title'] ?? ''); ?>" required placeholder="เช่น ประวัติความเป็นมา หรือ นโยบายหน่วยงาน" class="input input-bordered w-full rounded-xl focus:input-primary" />
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label"><span class="label-text font-bold text-xs uppercase text-base-content/60">เนื้อหาหน้าเว็บ (HTML / รูปแบบพิเศษ)</span></label>
+                <textarea id="contentArea" name="content" rows="16" placeholder="พิมพ์หรือแก้ไขเนื้อหาที่นี่..." class="textarea textarea-bordered w-full rounded-xl focus:textarea-primary min-h-[300px]"><?php echo htmlspecialchars($editData['content'] ?? ''); ?></textarea>
+            </div>
+
+            <div class="flex justify-end gap-3 border-t border-base-200 pt-6">
+                <?php if ($editData): ?>
+                    <a href="?page=manage_pages" class="btn btn-ghost rounded-xl font-bold">ยกเลิก</a>
+                <?php endif; ?>
+                <button type="submit" class="btn btn-primary rounded-xl font-bold px-8 shadow-lg shadow-primary/20 gap-2">
+                    <i class="fa-solid fa-save"></i> บันทึกข้อมูลและจัดเก็บหน้าเพจ
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ตารางรายการหน้าเพจ -->
+<div class="card bg-base-100 shadow-xl border border-base-200 overflow-hidden">
+    <div class="p-8 border-b border-base-200">
+        <h3 class="text-xl font-bold text-primary flex items-center gap-2 m-0">
+            <i class="fa-solid fa-list-check"></i> รายการหน้าเพจที่สร้างไว้ทั้งหมด (<?php echo count($pages); ?> หน้า)
+        </h3>
     </div>
 
-    <form method="POST">
-        <input type="hidden" name="action" value="save">
-        <?php if ($editData): ?><input type="hidden" name="id" value="<?php echo $editData['id']; ?>"><?php endif; ?>
-
-        <div style="margin-bottom: 15px;">
-            <label>หัวข้อหน้าเพจ</label>
-            <input type="text" name="title" value="<?php echo htmlspecialchars($editData['title'] ?? ''); ?>" required
-                placeholder="เช่น ประวัติความเป็นมา">
+    <?php if (empty($pages)): ?>
+        <div class="py-16 text-center flex flex-col items-center gap-4">
+            <div class="text-6xl text-base-content/30"><i class="fa-solid fa-file-invoice"></i></div>
+            <p class="text-base-content/50 font-medium">ยังไม่มีข้อมูลหน้าเพจเนื้อหาในระบบ<br>เริ่มต้นสร้างเพจแรกของคุณในแบบฟอร์มด้านบน</p>
         </div>
-
-        <div style="margin-bottom: 15px;">
-            <label>เนื้อหา (HTML)</label>
-            <textarea id="contentArea" name="content" rows="12"
-                placeholder="พิมพ์เนื้อหาที่นี่..."><?php echo htmlspecialchars($editData['content'] ?? ''); ?></textarea>
+    <?php else: ?>
+        <div class="overflow-x-auto w-full">
+            <table class="table table-zebra w-full select-none">
+                <thead>
+                    <tr class="bg-base-200 text-base-content/70">
+                        <th class="font-bold py-4">ID</th>
+                        <th class="font-bold py-4">หัวข้อหน้าเพจ</th>
+                        <th class="font-bold py-4">ลิงก์อ้างอิงสำหรับใช้งาน</th>
+                        <th class="font-bold py-4 text-center">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-base-200">
+                    <?php foreach ($pages as $p): ?>
+                        <?php $encodedLink = 'page.php?ref=' . encode_id($p['id']); ?>
+                        <tr class="hover:bg-base-200/30 transition-colors">
+                            <td class="py-4 font-bold text-xs"><?php echo $p['id']; ?></td>
+                            <td class="py-4 font-bold text-sm text-base-content/90"><?php echo htmlspecialchars($p['title']); ?></td>
+                            <td class="py-4">
+                                <div class="join w-full max-w-sm shadow-sm">
+                                    <input type="text" value="<?php echo $encodedLink; ?>" readonly class="input input-bordered input-xs join-item w-full bg-base-200/50 font-mono text-[11px] text-primary select-all" />
+                                    <button type="button" class="btn btn-neutral btn-xs join-item font-bold py-2 px-3 h-auto min-h-0" onclick="navigator.clipboard.writeText('<?php echo $encodedLink; ?>'); alert('คัดลอกลิงก์สำเร็จแล้ว!');">Copy</button>
+                                </div>
+                            </td>
+                            <td class="py-4 text-center">
+                                <div class="flex justify-center gap-2">
+                                    <a href="?page=manage_pages&edit=<?php echo $p['id']; ?>" class="btn btn-primary btn-sm rounded-lg font-bold gap-1">
+                                        <i class="fa-solid fa-edit"></i> แก้ไข
+                                    </a>
+                                    <form method="POST" style="display:inline;" onsubmit="return confirm('⚠️ ยืนยันการลบหน้าเพจนี้อย่างถาวร?');">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="<?php echo $p['id']; ?>">
+                                        <button type="submit" class="btn btn-error btn-outline btn-sm rounded-lg gap-1 font-bold">
+                                            <i class="fa-solid fa-trash-can"></i> ลบ
+                                        </button>
+                                    </form>
+                                    <a href="../<?php echo $encodedLink; ?>" target="_blank" class="btn btn-neutral btn-outline btn-sm rounded-lg gap-1 font-bold">
+                                        <i class="fa-solid fa-eye"></i> ดูเพจ
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
-
-        <button type="submit" class="btn btn-primary">💾 บันทึกเนื้อหา</button>
-        <?php if ($editData): ?>
-            <a href="?page=manage_pages" class="btn btn-secondary">ยกเลิก</a>
-        <?php endif; ?>
-    </form>
+    <?php endif; ?>
 </div>
 
-<div class="card">
-    <h3>รายการหน้าที่สร้างแล้ว</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>หัวข้อ</th>
-                <th>ลิงก์ (เข้ารหัส)</th>
-                <th>จัดการ</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($pages as $p): ?>
-                <?php $encodedLink = 'page.php?ref=' . encode_id($p['id']); // สร้างลิ้งค์แบบใหม่ ?>
-                <tr>
-                    <td><?php echo $p['id']; ?></td>
-                    <td><?php echo htmlspecialchars($p['title']); ?></td>
-                    <td>
-                        <div style="display: flex; gap: 5px;">
-                            <input type="text" value="<?php echo $encodedLink; ?>" readonly
-                                style="width: 100%; background: #f8f9fa; border: 1px solid #ddd; color: var(--primary); font-size: 12px;">
-                            <button type="button" class="btn btn-sm btn-secondary"
-                                onclick="navigator.clipboard.writeText('<?php echo $encodedLink; ?>'); alert('คัดลอกแล้ว!');">Copy</button>
-                        </div>
-                    </td>
-                    <td>
-                        <a href="?page=manage_pages&edit=<?php echo $p['id']; ?>" class="btn btn-sm btn-primary">แก้ไข</a>
-                        <form method="POST" style="display:inline;" onsubmit="return confirm('ยืนยันการลบ?');">
-                            <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="id" value="<?php echo $p['id']; ?>">
-                            <button type="submit" class="btn btn-sm btn-danger">ลบ</button>
-                        </form>
-                        <a href="../<?php echo $encodedLink; ?>" target="_blank" class="btn btn-sm btn-secondary">ดู</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
+<!-- TinyMCE 6 Community CDN (100% Free & Open Source) -->
+<script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
 
 <script>
+    // เริ่มระบบ TinyMCE
+    tinymce.init({
+        selector: '#contentArea', // ID ของ Textarea
+        height: 520,
+        
+        // Plugins (เฉพาะชุดที่เป็น Free Open-Source Community ทั้งหมด)
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
+            'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'emoticons', 'codesample'
+        ],
+
+        // Toolbar (เฉพาะเครื่องมือที่เป็นของฟรี ใช้งานได้ 100% ไม่มีโฆษณา/แจ้งเตือนคีย์)
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table codesample | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | emoticons charmap | removeformat preview fullscreen code',
+
+        // ตั้งค่าฟอนต์สารบัญ (Sarabun) ให้แสดงใน Editor
+        content_style: "@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap'); body { font-family: 'Sarabun', sans-serif; font-size: 16px; color: #333; }"
+    });
+
     function loadTemplate() {
-        const template = `<div style="max-width: 800px; margin: 0 auto;">
+        const template = `<div style="max-width: 800px; margin: 0 auto; font-family: 'Sarabun', sans-serif;">
     <div style="text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%); border-radius: 15px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
         <div style="width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2);">
             <i class="fas fa-eye" style="font-size: 36px; color: #f97316;"></i>
@@ -196,7 +252,11 @@ $pages = $pdo->query("SELECT * FROM custom_pages ORDER BY updated_at DESC")->fet
 </div>`;
 
         if (confirm('ต้องการแทนที่เนื้อหาเดิมด้วยตัวอย่างใช่หรือไม่?')) {
-            document.getElementById('contentArea').value = template;
+            if (typeof tinymce !== 'undefined' && tinymce.get('contentArea')) {
+                tinymce.get('contentArea').setContent(template);
+            } else {
+                document.getElementById('contentArea').value = template;
+            }
         }
     }
 </script>

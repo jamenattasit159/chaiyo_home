@@ -1,7 +1,6 @@
 <?php
 // admin/pages/pr_images.php - จัดการรูปประชาสัมพันธ์
 
-// ตรวจสอบ Session
 if (!isset($_SESSION['admin_id'])) {
     header('Location: ../login.php');
     exit;
@@ -9,209 +8,191 @@ if (!isset($_SESSION['admin_id'])) {
 
 $message = '';
 
-// จัดการการอัปโหลดและลบ
+// === จัดการอัปโหลด & ลบรูป ===
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $action = $_POST['action'] ?? '';
 
-    // 1. อัปโหลดรูปภาพ
-    if ($action == 'upload' && isset($_FILES['image'])) {
+    // 1. อัปโหลดรูปใหม่
+    if ($action == 'upload' && isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
         $file = $_FILES['image'];
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowedExt = ['jpg', 'jpeg', 'png', 'gif'];
-        
-        // ชื่อไฟล์ (Description) ที่ผู้ใช้กรอก ถ้าไม่มีให้ใช้ชื่อไฟล์เดิม
-        $file_desc = $_POST['description'] ?? $file['name'];
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
-        if (in_array($ext, $allowedExt)) {
-            $filename = time() . '_' . uniqid() . '.' . $ext;
+        if (!in_array($ext, $allowed)) {
+            $message = '<div class="alert alert-error shadow-sm mb-6 flex items-center gap-2"><i class="fas fa-times-circle text-lg"></i> รองรับเฉพาะไฟล์รูปภาพเท่านั้น (JPG, PNG, GIF, WebP)</div>';
+        } elseif ($file['size'] > 8 * 1024 * 1024) { // 8MB
+            $message = '<div class="alert alert-error shadow-sm mb-6 flex items-center gap-2"><i class="fas fa-times-circle text-lg"></i> ขนาดไฟล์ต้องไม่เกิน 8MB</div>';
+        } else {
+            $description = trim($_POST['description'] ?? '');
+            if (empty($description))
+                $description = $file['name'];
+
+            $filename = time() . '_' . bin2hex(random_bytes(8)) . '.' . $ext;
             $filepath = '../uploads/files/' . $filename;
-            
-            // ตรวจสอบว่ามีโฟลเดอร์หรือไม่
-            if (!is_dir('../uploads/files/')) {
-                mkdir('../uploads/files/', 0755, true);
+
+            if (!is_dir('../uploads/files')) {
+                mkdir('../uploads/files', 0755, true);
             }
 
             if (move_uploaded_file($file['tmp_name'], $filepath)) {
-                // บันทึกลงตาราง files แต่ระบุ category เป็น 'pr_activity'
-                $stmt = $pdo->prepare(
-                    "INSERT INTO files (filename, filepath, file_type, category, status, created_at) 
-                     VALUES (?, ?, ?, 'pr_activity', 'active', NOW())"
-                );
-                // ใช้ชื่อไฟล์ที่อัปโหลดเป็นชื่อแสดงผล หรือจะใช้ชื่อที่ตั้งเองก็ได้
-                $stmt->execute([$file_desc, $filename, $ext]);
-                
-                $message = "<div class='alert alert-success'>✓ อัปโหลดรูปประชาสัมพันธ์สำเร็จ</div>";
+                $stmt = $pdo->prepare("INSERT INTO files (filename, filepath, file_type, category, status, created_at) VALUES (?, ?, ?, 'pr_activity', 'active', NOW())");
+                $stmt->execute([$description, $filename, $ext]);
+
+                $message = '<div class="alert alert-success shadow-sm mb-6 flex items-center gap-2"><i class="fas fa-check-circle text-lg"></i> อัปโหลดรูปภาพประชาสัมพันธ์เรียบร้อยแล้ว</div>';
             } else {
-                $message = "<div class='alert alert-error'>✗ เกิดข้อผิดพลาดในการย้ายไฟล์</div>";
+                $message = '<div class="alert alert-error shadow-sm mb-6 flex items-center gap-2"><i class="fas fa-times-circle text-lg"></i> ไม่สามารถบันทึกไฟล์ได้</div>';
             }
-        } else {
-            $message = "<div class='alert alert-error'>✗ อนุญาตเฉพาะไฟล์รูปภาพ (JPG, PNG, GIF) เท่านั้น</div>";
         }
     }
 
-    // 2. ลบรูปภาพ
-    elseif ($action == 'delete') {
-        $id = $_POST['id'] ?? '';
-        
-        // ดึงข้อมูลไฟล์เพื่อลบไฟล์จริง
+    // 2. ลบรูป
+    elseif ($action == 'delete' && !empty($_POST['id'])) {
+        $id = (int) $_POST['id'];
+
         $stmt = $pdo->prepare("SELECT filepath FROM files WHERE id = ? AND category = 'pr_activity'");
         $stmt->execute([$id]);
-        $file = $stmt->fetch();
+        $file = $stmt->fetchColumn();
 
-        if ($file) {
-            if (file_exists('../uploads/files/' . $file['filepath'])) {
-                unlink('../uploads/files/' . $file['filepath']);
-            }
-            
-            $delStmt = $pdo->prepare("DELETE FROM files WHERE id = ?");
-            $delStmt->execute([$id]);
-            
-            $message = "<div class='alert alert-success'>✓ ลบรูปภาพสำเร็จ</div>";
+        if ($file && file_exists('../uploads/files/' . $file)) {
+            @unlink('../uploads/files/' . $file);
         }
+
+        $pdo->prepare("DELETE FROM files WHERE id = ?")->execute([$id]);
+        $message = '<div class="alert alert-success shadow-sm mb-6 flex items-center gap-2"><i class="fas fa-check-circle text-lg"></i> ลบรูปภาพเรียบร้อยแล้ว</div>';
     }
 }
 
-// ดึงรายการรูปประชาสัมพันธ์ (เฉพาะหมวด pr_activity)
-$pr_images = $pdo->query("SELECT * FROM files WHERE category = 'pr_activity' ORDER BY created_at DESC")->fetchAll();
+// ดึงรูปทั้งหมดในหมวด pr_activity
+$pr_images = $pdo->query("SELECT * FROM files WHERE category = 'pr_activity' ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<style>
-    .admin-form {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 30px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    .pr-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-        margin-top: 20px;
-    }
-    
-    .pr-card {
-        background: white;
-        border: 1px solid #eee;
-        border-radius: 8px;
-        overflow: hidden;
-        transition: all 0.3s;
-        position: relative;
-    }
-    
-    .pr-card:hover {
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        transform: translateY(-2px);
-    }
-    
-    .pr-img-wrapper {
-        height: 150px;
-        overflow: hidden;
-        background: #f9f9f9;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .pr-img-wrapper img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    
-    .pr-info {
-        padding: 10px;
-    }
-    
-    .pr-name {
-        font-size: 13px;
-        font-weight: bold;
-        margin-bottom: 5px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    
-    .pr-date {
-        font-size: 11px;
-        color: #888;
-        margin-bottom: 10px;
-    }
-    
-    .btn-delete {
-        width: 100%;
-        background: #fff0f0;
-        color: #dc3545;
-        border: 1px solid #ffc9c9;
-        padding: 5px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-    }
-    
-    .btn-delete:hover {
-        background: #dc3545;
-        color: white;
-    }
-
-    .alert { padding: 12px; border-radius: 5px; margin-bottom: 20px; }
-    .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-    .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-</style>
-
-<h2>🖼️ จัดการรูปประชาสัมพันธ์ (Activity Gallery)</h2>
+<!-- หัวข้อของหน้า -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+        <h2 class="text-2xl font-extrabold text-base-content flex items-center gap-2.5">
+            <i class="fas fa-photo-film text-primary"></i> จัดการรูปประชาสัมพันธ์ / กิจกรรม
+        </h2>
+        <p class="text-sm text-base-content/60 mt-1">อัปเดตและแสดงแกลเลอรีรูปภาพข่าวสาร กิจกรรมหน่วยงาน เพื่อนำไปแสดงในหน้าเว็บหลัก</p>
+    </div>
+</div>
 
 <?php echo $message; ?>
 
-<div class="admin-form">
-    <h3>📤 อัปโหลดรูปกิจกรรมใหม่</h3>
-    <form method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="action" value="upload">
-        
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px; font-weight: bold;">เลือกรูปภาพ:</label>
-            <input type="file" name="image" accept="image/*" required 
-                   style="padding: 10px; border: 1px solid #ddd; width: 100%; border-radius: 5px;">
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
+    <!-- ฟอร์มอัปโหลดรูป (1 ส่วน) -->
+    <div class="card bg-base-100 shadow-xl border border-base-200">
+        <div class="card-body">
+            <h3 class="card-title text-lg font-bold text-base-content flex items-center gap-2 border-b border-base-200 pb-3 mb-2">
+                <i class="fas fa-cloud-upload-alt text-primary"></i> อัปโหลดรูปกิจกรรมใหม่
+            </h3>
+            
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                <input type="hidden" name="action" value="upload">
+
+                <!-- อัปโหลดดีไซน์พรีเมียม -->
+                <div class="form-control">
+                    <label class="label py-1.5">
+                        <span class="label-text font-bold text-base-content/85">ไฟล์รูปภาพ</span>
+                    </label>
+                    <div class="border-2 border-dashed border-base-300 rounded-2xl p-6 text-center cursor-pointer hover:border-primary hover:bg-primary/5 transition duration-200 group flex flex-col items-center justify-center gap-2" 
+                         onclick="document.getElementById('imgInput').click()">
+                        <i class="fas fa-images text-3xl text-base-content/30 group-hover:text-primary group-hover:scale-110 transition duration-200"></i>
+                        <span class="text-xs font-bold text-base-content/80 group-hover:text-primary">คลิกเพื่อเลือกไฟล์ภาพ</span>
+                        <span class="text-[10px] text-base-content/50">JPG, PNG, GIF, WebP (ไม่เกิน 8MB)</span>
+                    </div>
+                    <input type="file" id="imgInput" name="image" accept="image/*" class="hidden" required>
+                    <!-- แถบแสดงสถานะเลือกไฟล์ -->
+                    <div id="fileInfo" class="text-xs font-semibold text-primary mt-2 min-h-[16px] text-center"></div>
+                </div>
+
+                <!-- คำอธิบายรูปภาพ -->
+                <div class="form-control w-full">
+                    <label class="label py-1.5">
+                        <span class="label-text font-bold text-base-content/80">คำอธิบายรูปภาพ (ไม่บังคับ)</span>
+                    </label>
+                    <input type="text" name="description" class="input input-bordered w-full"
+                           placeholder="เช่น พิธีทำบุญตักบาตรประจำปี 2568...">
+                </div>
+
+                <div class="card-actions justify-end pt-2">
+                    <button type="submit" class="btn btn-primary w-full gap-2">
+                        <i class="fas fa-arrow-circle-up text-lg"></i> อัปโหลดรูปภาพ
+                    </button>
+                </div>
+            </form>
         </div>
-        
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px; font-weight: bold;">คำอธิบายรูปภาพ (Optional):</label>
-            <input type="text" name="description" placeholder="เช่น กิจกรรมวันสำคัญ..." 
-                   style="padding: 10px; border: 1px solid #ddd; width: 100%; border-radius: 5px;">
+    </div>
+
+    <!-- แกลเลอรีรูปภาพทั้งหมด (2 ส่วน) -->
+    <div class="card bg-base-100 shadow-xl border border-base-200 xl:col-span-2 overflow-hidden">
+        <div class="p-6 pb-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+                <h3 class="card-title text-lg font-bold text-base-content flex items-center gap-2">
+                    <i class="fas fa-images text-primary"></i> รายการรูปภาพกิจกรรมทั้งหมด
+                </h3>
+                <p class="text-xs text-base-content/55 mt-0.5">ภาพกิจกรรมที่เปิดใช้งานจะเรียงลำดับจากล่าสุดขึ้นก่อน</p>
+            </div>
+            <div class="badge badge-neutral font-bold py-3 px-3.5 select-none shrink-0 self-start sm:self-center">
+                ทั้งหมด <?php echo count($pr_images); ?> รูป
+            </div>
         </div>
-        
-        <button type="submit" class="btn btn-primary">บันทึกรูปภาพ</button>
-    </form>
+
+        <div class="card-body mt-4">
+            <?php if (empty($pr_images)): ?>
+                <div class="flex flex-col items-center justify-center text-center p-12 bg-base-200/40 rounded-2xl border border-base-200">
+                    <i class="fas fa-photo-video text-5xl text-base-content/20 mb-3 animate-pulse"></i>
+                    <h4 class="font-bold text-base text-base-content">ยังไม่มีรูปภาพประชาสัมพันธ์</h4>
+                    <p class="text-xs text-base-content/50 mt-1 max-w-[280px]">เริ่มต้นโดยอัปโหลดภาพกิจกรรมภาพแรกด้วยแบบฟอร์มด้านซ้าย</p>
+                </div>
+            <?php else: ?>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <?php foreach ($pr_images as $img): ?>
+                        <div class="card bg-base-100 border border-base-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 overflow-hidden group">
+                            <!-- พรีวิวรูปภาพ -->
+                            <figure class="aspect-[4/3] bg-base-300 relative overflow-hidden">
+                                <img src="../uploads/files/<?php echo htmlspecialchars($img['filepath']); ?>"
+                                     alt="<?php echo htmlspecialchars($img['filename']); ?>"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                <span class="absolute top-2 left-2 badge badge-neutral bg-black/60 text-[9px] border-none text-white py-2 px-2.5 font-bold">
+                                    <?php echo strtoupper(htmlspecialchars($img['file_type'])); ?>
+                                </span>
+                            </figure>
+                            
+                            <div class="p-3.5 flex flex-col justify-between flex-1 gap-2">
+                                <div class="min-w-0">
+                                    <div class="font-bold text-xs text-base-content line-clamp-2 min-h-[32px] break-all leading-relaxed" 
+                                         title="<?php echo htmlspecialchars($img['filename']); ?>">
+                                        <?php echo htmlspecialchars($img['filename']); ?>
+                                    </div>
+                                    <div class="text-[10px] text-base-content/50 flex items-center gap-1 mt-1 font-semibold">
+                                        <i class="far fa-clock"></i>
+                                        <?php echo date('d/m/Y H:i', strtotime($img['created_at'])); ?>
+                                    </div>
+                                </div>
+                                
+                                <form method="POST" onsubmit="return confirm('ยืนยันลบรูปนี้หรือไม่?');" class="mt-1">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?php echo $img['id']; ?>">
+                                    <button type="submit" class="btn btn-error btn-outline btn-xs w-full gap-1 py-2 h-auto text-[10px]">
+                                        <i class="fa-solid fa-trash-can"></i> ลบรูปภาพ
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
 </div>
 
-<h3>📋 รายการรูปภาพปัจจุบัน (<?php echo count($pr_images); ?>)</h3>
-
-<?php if (empty($pr_images)): ?>
-    <div style="text-align: center; padding: 40px; background: white; border-radius: 8px; color: #999;">
-        ยังไม่มีรูปภาพประชาสัมพันธ์
-    </div>
-<?php else: ?>
-    <div class="pr-grid">
-        <?php foreach ($pr_images as $img): ?>
-            <div class="pr-card">
-                <div class="pr-img-wrapper">
-                    <img src="../uploads/files/<?php echo htmlspecialchars($img['filepath']); ?>" alt="Activity">
-                </div>
-                <div class="pr-info">
-                    <div class="pr-name" title="<?php echo htmlspecialchars($img['filename']); ?>">
-                        <?php echo htmlspecialchars($img['filename']); ?>
-                    </div>
-                    <div class="pr-date">
-                        📅 <?php echo date('d/m/Y H:i', strtotime($img['created_at'])); ?>
-                    </div>
-                    <form method="POST" onsubmit="return confirm('ต้องการลบรูปนี้ใช่หรือไม่?');">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="id" value="<?php echo $img['id']; ?>">
-                        <button type="submit" class="btn-delete">🗑️ ลบรูปภาพ</button>
-                    </form>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
-<?php endif; ?>
+<script>
+    // แสดงชื่อไฟล์ที่เลือก
+    document.getElementById('imgInput').addEventListener('change', function () {
+        if (this.files[0]) {
+            document.getElementById('fileInfo').innerHTML = '<i class="fas fa-file-image"></i> เลือกไฟล์แล้ว: <span class="text-base-content font-bold">' + this.files[0].name + '</span>';
+        } else {
+            document.getElementById('fileInfo').textContent = '';
+        }
+    });
+</script>

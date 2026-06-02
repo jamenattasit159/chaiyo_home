@@ -56,4 +56,44 @@ function decode_id($encoded)
     $id = base64_decode($encoded);
     return ($id / 123456789);
 }
+
+// ฟังก์ชันดึงค่าสีและธีมมาใช้แสดงผล
+function get_theme_style_block($pdo)
+{
+    $theme_primary = '#059669';
+    $theme_secondary = '#047857';
+    $theme_accent = '#10b981';
+    
+    try {
+        $stmt = $pdo->query("SELECT setting_key, setting_value FROM settings WHERE setting_key LIKE 'theme_%'");
+        $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        
+        if (isset($settings['theme_primary'])) {
+            $theme_primary = $settings['theme_primary'];
+        }
+        if (isset($settings['theme_secondary'])) {
+            $theme_secondary = $settings['theme_secondary'];
+        }
+        if (isset($settings['theme_accent'])) {
+            $theme_accent = $settings['theme_accent'];
+        }
+    } catch (Exception $e) {
+        // กรณีตารางยังไม่มีข้อมูล หรือไม่มีตาราง
+    }
+
+    return "
+    <style>
+        :root {
+            --primary: {$theme_primary};
+            --primary-hover: {$theme_secondary};
+            --secondary: {$theme_secondary};
+            --accent: {$theme_accent};
+            --light-green: color-mix(in srgb, var(--primary) 15%, white);
+            --lighter-green: color-mix(in srgb, var(--primary) 5%, white);
+            --light: color-mix(in srgb, var(--primary) 5%, white);
+        }
+    </style>
+    ";
+}
 ?>
+

@@ -28,347 +28,154 @@ try {
 }
 ?>
 
-<style>
-    .dashboard-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 30px;
-        border-radius: 8px;
-        margin-bottom: 30px;
-    }
-
-    .dashboard-header h1 {
-        margin: 0;
-        font-size: 28px;
-    }
-
-    .dashboard-header p {
-        margin: 5px 0 0 0;
-        opacity: 0.9;
-        font-size: 14px;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 25px;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        border-left: 4px solid #667eea;
-        transition: all 0.3s;
-        text-decoration: none;
-        color: inherit;
-        cursor: pointer;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .stat-card h3 {
-        color: #666;
-        font-size: 12px;
-        text-transform: uppercase;
-        margin: 0 0 10px 0;
-        letter-spacing: 0.5px;
-    }
-
-    .stat-card .number {
-        font-size: 32px;
-        font-weight: bold;
-        color: #667eea;
-    }
-
-    .stat-card.banners {
-        border-left-color: #f97316;
-    }
-
-    .stat-card.banners .number {
-        color: #f97316;
-    }
-
-    .stat-card.directors {
-        border-left-color: #667eea;
-    }
-
-    .stat-card.directors .number {
-        color: #667eea;
-    }
-
-    .stat-card.announcements {
-        border-left-color: #28a745;
-    }
-
-    .stat-card.announcements .number {
-        color: #28a745;
-    }
-
-    .stat-card.files {
-        border-left-color: #dc3545;
-    }
-
-    .stat-card.files .number {
-        color: #dc3545;
-    }
-
-    .two-column {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        margin-top: 30px;
-    }
-
-    .card {
-        background: white;
-        padding: 25px;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .card h2 {
-        margin-top: 0;
-        color: #333;
-        border-bottom: 2px solid #667eea;
-        padding-bottom: 10px;
-        font-size: 18px;
-        margin-bottom: 15px;
-    }
-
-    .list-item {
-        padding: 12px 0;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .list-item:last-child {
-        border-bottom: none;
-    }
-
-    .list-item-content {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .list-item strong {
-        color: #333;
-        display: block;
-        font-size: 14px;
-        word-break: break-word;
-    }
-
-    .list-item small {
-        color: #999;
-        font-size: 12px;
-        display: block;
-        margin-top: 4px;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 11px;
-        font-weight: bold;
-        white-space: nowrap;
-        margin-top: 4px;
-    }
-
-    .badge-active {
-        background: #d4edda;
-        color: #155724;
-    }
-
-    .badge-file {
-        background: #cfe2ff;
-        color: #084298;
-    }
-
-    .badge-pdf {
-        background: #f8d7da;
-        color: #721c24;
-    }
-
-    .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 10px;
-        margin-top: 20px;
-    }
-
-    .quick-btn {
-        padding: 10px;
-        background: #667eea;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        text-decoration: none;
-        text-align: center;
-        font-size: 13px;
-        transition: background 0.3s;
-    }
-
-    .quick-btn:hover {
-        background: #5568d3;
-    }
-
-    .quick-btn.secondary {
-        background: #6c757d;
-    }
-
-    .quick-btn.secondary:hover {
-        background: #5a6268;
-    }
-
-    .view-all-btn {
-        display: inline-block;
-        margin-top: 15px;
-    }
-
-    @media (max-width: 768px) {
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .two-column {
-            grid-template-columns: 1fr;
-        }
-
-        .dashboard-header {
-            padding: 20px;
-        }
-
-        .dashboard-header h1 {
-            font-size: 22px;
-        }
-
-        .list-item {
-            flex-direction: column;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .stats-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .stat-card {
-            padding: 15px;
-        }
-
-        .stat-card .number {
-            font-size: 24px;
-        }
-    }
-</style>
-
-<div class="dashboard-header">
-    <h1>👋 ยินดีต้อนรับ, <?php echo htmlspecialchars($_SESSION['username']); ?></h1>
-    <p>📅 <?php echo date('วันที่ d/m/Y เวลา H:i:s', time()); ?></p>
-</div>
-
-<!-- สถิติ -->
-<div class="stats-grid">
-    <a href="?page=banners" class="stat-card banners">
-        <h3>📸 แบนเนอร์</h3>
-        <div class="number"><?php echo $bannerCount; ?></div>
-    </a>
-
-    <a href="?page=directors" class="stat-card directors">
-        <h3>👔 ผู้บริหาร</h3>
-        <div class="number"><?php echo $directorCount; ?></div>
-    </a>
-
-    <a href="?page=announcements" class="stat-card announcements">
-        <h3>📢 ประกาศ</h3>
-        <div class="number"><?php echo $announcementCount; ?></div>
-    </a>
-
-    <a href="?page=announcements" class="stat-card files">
-        <h3>📄 ไฟล์</h3>
-        <div class="number"><?php echo $fileCount; ?></div>
-    </a>
-</div>
-
-<!-- การกระทำด่วน -->
-<div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
-    <h2 style="border-bottom-color: rgba(255,255,255,0.3); color: white; margin-bottom: 10px;">⚡ การกระทำด่วน</h2>
-    <div class="quick-actions">
-        <a href="?page=banners" class="quick-btn">📸 แบนเนอร์</a>
-        <a href="?page=directors" class="quick-btn">👔 ผู้บริหาร</a>
-        <a href="?page=announcements" class="quick-btn">📢 ประกาศ & ไฟล์</a>
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+    <div>
+        <h1 class="text-3xl font-black text-base-content flex items-center gap-2">👋 ยินดีต้อนรับ, <?php echo htmlspecialchars($_SESSION['username']); ?></h1>
+        <p class="text-base-content/60 mt-1">ยินดีต้อนรับเข้าสู่ระบบจัดการและควบคุมเว็บไซต์อย่างเป็นทางการ</p>
+    </div>
+    <div class="badge badge-neutral font-bold py-3.5 px-4 text-xs gap-2">
+        <i class="fa-regular fa-clock"></i> <span><?php echo date('วันที่ d/m/Y เวลา H:i:s', time()); ?></span>
     </div>
 </div>
 
-<!-- ประกาศและไฟล์ -->
-<div class="two-column">
-    <div class="card">
-        <h2>📰 ประกาศล่าสุด</h2>
-        <?php if (empty($recentAnnouncements)): ?>
-            <p style="color: #999; text-align: center; padding: 20px;">ยังไม่มีประกาศ</p>
-        <?php else: ?>
-            <?php foreach ($recentAnnouncements as $announce): ?>
-                <div class="list-item">
-                    <div class="list-item-content">
-                        <strong><?php echo htmlspecialchars(substr($announce['title'], 0, 40)); ?></strong>
-                        <small>
-                            📅 <?php echo date('d/m/Y H:i', strtotime($announce['created_at'])); ?>
-                        </small>
-                        <div class="badge badge-active">✓ เปิดใช้งาน</div>
+<!-- สถิติแบบพรีเมียม -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 w-full">
+    <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow">
+        <div class="card-body p-6 flex flex-row items-center justify-between">
+            <div>
+                <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">ภาพแบนเนอร์</span>
+                <span class="text-3xl font-black text-primary block mt-1"><?php echo $bannerCount; ?></span>
+                <a href="?page=banners" class="link link-primary link-hover text-xs font-bold block mt-2">จัดการแบนเนอร์ →</a>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary text-2xl">📸</div>
+        </div>
+    </div>
+    
+    <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow">
+        <div class="card-body p-6 flex flex-row items-center justify-between">
+            <div>
+                <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">คณะผู้บริหาร</span>
+                <span class="text-3xl font-black text-secondary block mt-1"><?php echo $directorCount; ?></span>
+                <a href="?page=directors" class="link link-secondary link-hover text-xs font-bold block mt-2">จัดการบุคลากร →</a>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary text-2xl">👔</div>
+        </div>
+    </div>
+    
+    <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow">
+        <div class="card-body p-6 flex flex-row items-center justify-between">
+            <div>
+                <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">ประกาศเผยแพร่</span>
+                <span class="text-3xl font-black text-accent block mt-1"><?php echo $announcementCount; ?></span>
+                <a href="?page=announcements" class="link link-accent link-hover text-xs font-bold block mt-2">จัดการประกาศ →</a>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-accent text-2xl">📢</div>
+        </div>
+    </div>
+    
+    <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow">
+        <div class="card-body p-6 flex flex-row items-center justify-between">
+            <div>
+                <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">ไฟล์ในระบบ</span>
+                <span class="text-3xl font-black text-info block mt-1"><?php echo $fileCount; ?></span>
+                <a href="?page=files" class="link link-info link-hover text-xs font-bold block mt-2">จัดการไฟล์ →</a>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center text-info text-2xl">📄</div>
+        </div>
+    </div>
+</div>
+
+<!-- การกระทำด่วน (Quick Actions) ดีไซน์พรีเมียม -->
+<div class="card bg-gradient-to-r from-primary to-secondary text-primary-content shadow-xl mb-8 border-none overflow-hidden relative">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent)] pointer-events-none"></div>
+    <div class="card-body p-8 relative z-10">
+        <h2 class="card-title text-2xl font-black flex items-center gap-2"><i class="fa-solid fa-bolt text-warning animate-bounce"></i> ทางลัดการจัดการข้อมูล (Quick Links)</h2>
+        <p class="text-white/80 text-sm max-w-xl">เข้าถึงส่วนการบริหารจัดการข้อมูลของระบบหลักได้อย่างสะดวกรวดเร็วในคลิกเดียว</p>
+        <div class="card-actions justify-start gap-3 mt-6">
+            <a href="?page=banners" class="btn bg-white/20 hover:bg-white/30 text-white border-none rounded-xl gap-2 font-bold"><i class="fa-solid fa-images"></i> จัดการแบนเนอร์</a>
+            <a href="?page=directors" class="btn bg-white/20 hover:bg-white/30 text-white border-none rounded-xl gap-2 font-bold"><i class="fa-solid fa-user-tie"></i> ข้อมูลผู้บริหาร</a>
+            <a href="?page=announcements" class="btn bg-white/20 hover:bg-white/30 text-white border-none rounded-xl gap-2 font-bold"><i class="fa-solid fa-bullhorn"></i> ข่าวประกาศ & ไฟล์แนบ</a>
+        </div>
+    </div>
+</div>
+
+<!-- ตารางแสดงรายการล่าสุดแบบสองฝั่ง -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- ประกาศล่าสุด -->
+    <div class="card bg-base-100 shadow-xl border border-base-200">
+        <div class="card-body p-6 flex flex-col justify-between">
+            <div>
+                <h2 class="card-title text-lg font-bold text-base-content flex items-center gap-2 mb-4 border-b border-base-200 pb-4">
+                    <i class="fa-solid fa-newspaper text-primary text-xl"></i> ประกาศอัปเดตล่าสุด
+                </h2>
+                <?php if (empty($recentAnnouncements)): ?>
+                    <p class="text-base-content/50 text-center py-12">ยังไม่มีข้อมูลประกาศล่าสุดในระบบ</p>
+                <?php else: ?>
+                    <div class="divide-y divide-base-200">
+                        <?php foreach ($recentAnnouncements as $announce): ?>
+                            <div class="py-3 flex justify-between items-center gap-4 hover:bg-base-200/40 px-2 rounded-lg transition-colors">
+                                <div class="flex flex-col gap-1 min-w-0">
+                                    <span class="font-bold text-base-content/90 line-clamp-1 text-sm"><?php echo htmlspecialchars($announce['title']); ?></span>
+                                    <span class="text-xs text-base-content/50 flex items-center gap-1"><i class="fa-regular fa-calendar"></i> เผยแพร่เมื่อ: <?php echo date('d/m/Y H:i', strtotime($announce['created_at'])); ?></span>
+                                </div>
+                                <div class="badge badge-success text-white font-bold text-[10px] uppercase py-2 px-2.5">Active</div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
-        <a href="?page=announcements" class="quick-btn secondary view-all-btn"
-            style="display: block; text-align: center;">ดูทั้งหมด →</a>
+                <?php endif; ?>
+            </div>
+            <div class="card-actions justify-end border-t border-base-200 pt-4 mt-4">
+                <a href="?page=announcements" class="btn btn-ghost btn-sm text-primary font-bold gap-1">ดูประกาศทั้งหมด <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
     </div>
 
-    <div class="card">
-        <h2>📄 ไฟล์ล่าสุด</h2>
-        <?php if (empty($recentFiles)): ?>
-            <p style="color: #999; text-align: center; padding: 20px;">ยังไม่มีไฟล์</p>
-        <?php else: ?>
-            <?php foreach ($recentFiles as $file): ?>
-                <div class="list-item">
-                    <div class="list-item-content">
-                        <strong style="display: flex; align-items: center; gap: 8px;">
-                            <?php
-                            $icons = [
-                                'pdf' => '📄',
-                                'doc' => '📝',
-                                'docx' => '📝',
-                                'xls' => '📊',
-                                'xlsx' => '📊',
-                                'ppt' => '📑',
-                                'pptx' => '📑',
-                                'jpg' => '🖼️',
-                                'png' => '🖼️',
-                                'zip' => '🗜️'
-                            ];
-                            $ext = strtolower($file['file_type']);
-                            echo $icons[$ext] ?? '📦';
-                            ?>
-                            <?php echo htmlspecialchars(substr($file['filename'], 0, 35)); ?>
-                        </strong>
-                        <small>
-                            📅 <?php echo date('d/m/Y', strtotime($file['created_at'])); ?>
-                            <span style="margin-left: 8px;">📁 <?php echo strtoupper($file['category']); ?></span>
-                        </small>
+    <!-- ไฟล์ล่าสุด -->
+    <div class="card bg-base-100 shadow-xl border border-base-200">
+        <div class="card-body p-6 flex flex-col justify-between">
+            <div>
+                <h2 class="card-title text-lg font-bold text-base-content flex items-center gap-2 mb-4 border-b border-base-200 pb-4">
+                    <i class="fa-solid fa-file-arrow-up text-secondary text-xl"></i> รายการอัปโหลดไฟล์ล่าสุด
+                </h2>
+                <?php if (empty($recentFiles)): ?>
+                    <p class="text-base-content/50 text-center py-12">ยังไม่มีข้อมูลไฟล์อัปโหลดในระบบ</p>
+                <?php else: ?>
+                    <div class="divide-y divide-base-200">
+                        <?php foreach ($recentFiles as $file): ?>
+                            <div class="py-3 flex justify-between items-center gap-4 hover:bg-base-200/40 px-2 rounded-lg transition-colors">
+                                <div class="flex flex-col gap-1 min-w-0">
+                                    <span class="font-bold text-base-content/90 flex items-center gap-2 line-clamp-1 text-sm">
+                                        <?php
+                                        $icons = [
+                                            'pdf' => '📄',
+                                            'doc' => '📝',
+                                            'docx' => '📝',
+                                            'xls' => '📊',
+                                            'xlsx' => '📊',
+                                            'ppt' => '📑',
+                                            'pptx' => '📑',
+                                            'jpg' => '🖼️',
+                                            'png' => '🖼️',
+                                            'zip' => '🗜️'
+                                        ];
+                                        $ext = strtolower($file['file_type']);
+                                        echo $icons[$ext] ?? '📦';
+                                        ?>
+                                        <?php echo htmlspecialchars($file['filename']); ?>
+                                    </span>
+                                    <span class="text-xs text-base-content/50 flex items-center gap-3">
+                                        <span><i class="fa-regular fa-calendar"></i> <?php echo date('d/m/Y', strtotime($file['created_at'])); ?></span>
+                                        <span class="badge badge-ghost badge-sm text-[9px] uppercase font-bold py-1.5 px-2"><?php echo htmlspecialchars($file['category']); ?></span>
+                                    </span>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
-        <a href="?page=announcements" class="quick-btn secondary view-all-btn"
-            style="display: block; text-align: center;">ดูทั้งหมด →</a>
+                <?php endif; ?>
+            </div>
+            <div class="card-actions justify-end border-t border-base-200 pt-4 mt-4">
+                <a href="?page=announcements" class="btn btn-ghost btn-sm text-secondary font-bold gap-1">ดูไฟล์ทั้งหมด <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
     </div>
 </div>

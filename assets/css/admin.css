@@ -1,129 +1,631 @@
-/* assets/css/admin.css */
+/* assets/css/admin.css - Premium Modern SaaS Admin Panel Styling */
 
-/* นำเข้าฟอนต์ Google Fonts (Sarabun) เพื่อความสวยงาม */
-@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+/* นำเข้าฟอนต์ Google Fonts เพื่อความพรีเมียม */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 
+/* ==========================================
+   1. CORE VARIABLES & THEME CONFIG (Dynamic Fallbacks)
+   ========================================== */
 :root {
-    --primary: #f97316;
-    --primary-hover: #ea580c;
-    --sidebar-bg: #1e293b;
-    /* สีพื้นหลัง Sidebar เข้ม */
-    --sidebar-text: #cbd5e1;
-    /* สีตัวหนังสือ Sidebar */
-    --bg-body: #f1f5f9;
-    /* สีพื้นหลังเว็บ */
+    /* Fallback colors - จะถูกทับด้วย style block จาก Database โดยอัตโนมัติ */
+    --primary: #059669;
+    --primary-hover: #047857;
+    --secondary: #047857;
+    --accent: #10b981;
+    --light-green: rgba(5, 150, 105, 0.15);
+    --lighter-green: rgba(5, 150, 105, 0.05);
+    --light: rgba(5, 150, 105, 0.05);
+    
+    /* Slate & Grayscale System (Premium Dark UI Elements) */
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
+    --slate-950: #020617;
+    
+    /* Functional Colors */
+    --info: #0ea5e9;
+    --info-light: #e0f2fe;
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+
+    /* Interface Tokens */
+    --bg-body: #f8fafc;
     --card-bg: #ffffff;
+    --border-color: #f1f5f9;
+    --border-hover: #e2e8f0;
     --text-main: #334155;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --text-muted: #64748b;
+    
+    /* Sidebar Specific Styling (Sleek Charcoal Navy) */
+    --sidebar-bg: #0f172a;
+    --sidebar-hover-bg: rgba(255, 255, 255, 0.04);
+    --sidebar-active-bg: rgba(255, 255, 255, 0.07);
+    --sidebar-text: #94a3b8;
+    --sidebar-active-text: #ffffff;
+    --sidebar-width: 280px;
+    --sidebar-collapsed-width: 80px;
+    --topbar-height: 70px;
+    
+    /* Elevation Shadows (Soft natural depth) */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    --shadow-glow: 0 0 15px -3px var(--light-green);
+    
+    /* Layout Details */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s ease;
 }
 
-/* Reset พื้นฐาน */
+/* ==========================================
+   2. RESET & BASE ELEMENTS
+   ========================================== */
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
 }
 
 body {
-    font-family: 'Sarabun', sans-serif;
-    /* ใช้ฟอนต์สวยๆ */
-    margin: 0;
-    padding: 0;
+    font-family: 'Sarabun', 'Outfit', sans-serif;
     background-color: var(--bg-body);
     color: var(--text-main);
-    font-size: 14px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- Layout --- */
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--slate-300);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--slate-400);
+}
+
+/* Standard Anchors */
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+a:hover {
+    color: var(--primary-hover);
+}
+
+/* ==========================================
+   3. LAYOUT STRUCTURE
+   ========================================== */
 .admin-container {
     display: flex;
     min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
 }
 
-/* --- Sidebar (เมนูด้านซ้าย) --- */
+/* Main Content Area Wrapper */
+.main-content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background-color: var(--bg-body);
+    transition: var(--transition-smooth);
+    padding: 0;
+}
+
+/* Base Main Content */
+.main-content {
+    flex: 1;
+    padding: 24px 30px 40px 30px;
+    overflow-y: auto;
+}
+
+/* Inner Page Fade-in Animation */
+.content-fade-in-wrapper {
+    animation: contentFadeUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes contentFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================
+   4. SIDEBAR DESIGN (Sleek Premium Floating Card)
+   ========================================== */
 .sidebar {
-    width: 260px;
+    width: var(--sidebar-width);
     background-color: var(--sidebar-bg);
+    background: rgba(15, 23, 42, 0.95); /* กึ่งโปร่งใสแบบล้ำสมัย */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     color: var(--sidebar-text);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
-    /* เงาด้านขวา */
+    
+    /* แปลงเป็น Floating Card (ลิฟฟิกการ์ด) */
+    height: calc(100vh - 40px);
+    margin: 20px 0 20px 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px -15px rgba(2, 6, 23, 0.5);
+    
+    position: sticky;
+    top: 20px;
     z-index: 100;
+    transition: var(--transition-smooth);
 }
 
 .admin-header {
-    padding: 30px 20px;
-    background: rgba(0, 0, 0, 0.2);
-    /* สีพื้นหลัง Header จางๆ */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px 24px 22px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(2, 6, 23, 0.2);
+    border-radius: 24px 24px 0 0; /* โค้งมนรับกับขอบการ์ดหลัก */
 }
 
-.admin-header h2 {
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.logo-icon {
+    font-size: 24px;
+    filter: drop-shadow(0 0 10px var(--primary));
+}
+
+.logo-text {
     margin: 0;
-    color: #fff;
-    font-size: 20px;
+    color: #ffffff;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    opacity: 1;
+    background: linear-gradient(135deg, #ffffff 0%, var(--slate-300) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: var(--transition-smooth);
+}
+
+.welcome-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 6px 14px;
+    border-radius: 50px;
+    width: fit-content;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.user-dot {
+    width: 7px;
+    height: 7px;
+    background-color: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.welcome-text {
+    font-size: 11.5px;
+    color: var(--slate-300);
     font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* Sidebar Menu List */
+.admin-menu {
+    list-style: none;
+    padding: 22px 10px;
+    margin: 0;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.admin-menu::-webkit-scrollbar {
+    width: 4px;
+}
+
+.admin-menu li {
+    margin-bottom: 6px;
+}
+
+/* Sidebar Links (Floating Pills / Mini Cards Style) */
+.admin-menu a {
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    color: var(--sidebar-text);
+    text-decoration: none !important;
+    border-radius: 14px; /* โค้งมนเป็นกล่องการ์ดเล็ก */
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: none; /* ลบเส้นแถบหนาด้านซ้ายออก */
+    margin: 0 8px; /* เว้นระยะห่างขอบใน sidebar เพื่อให้ลอยล้อมรอบ */
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-menu a i {
+    width: 22px;
+    font-size: 16px;
+    margin-right: 12px;
+    transition: var(--transition-smooth);
+    text-align: center;
+}
+
+.admin-menu a span {
+    white-space: nowrap;
+    transition: opacity 0.3s ease;
+}
+
+/* Hover State - Floating Card Effect */
+.admin-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #ffffff !important;
+    padding-left: 22px;
+    transform: translateX(4px);
+}
+
+.admin-menu a:hover i {
+    color: var(--primary);
+    transform: scale(1.15);
+}
+
+/* Active State - Luminous Floating Card */
+.admin-menu a.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    color: #ffffff !important;
+    font-weight: 700;
+    border-left: none;
+    box-shadow: 0 8px 22px -6px var(--primary); /* แสงสะท้อนเรืองแสงสีธีมใต้ตัวการ์ด */
+}
+
+.admin-menu a.active i {
+    color: #ffffff !important; /* ไอคอนเป็นสีขาวกลมกลืน */
+    transform: scale(1.05);
+}
+
+/* Super Admin Divider */
+.menu-divider {
+    padding: 20px 24px 8px 24px;
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--slate-500);
+    white-space: nowrap;
+}
+
+/* Super Admin Button Highlight */
+.super-admin-btn:hover {
+    background-color: rgba(239, 68, 68, 0.08) !important;
+}
+.super-admin-btn.active {
+    background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%) !important;
+    box-shadow: 0 8px 22px -6px var(--danger) !important;
+}
+.super-admin-btn.active i {
+    color: #ffffff !important;
+}
+
+/* Logout Button Link */
+.logout-item {
+    margin-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 15px;
+}
+
+.btn-logout-link:hover {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+    color: #fca5a5 !important;
+    transform: translateX(4px);
+}
+
+.btn-logout-link:hover i {
+    color: var(--danger) !important;
+}
+
+/* ==========================================
+   4.5 SIDEBAR COLLAPSED (Desktop Collapsed Floating Card)
+   ========================================== */
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed-width);
+}
+
+.sidebar.collapsed .logo-text,
+.sidebar.collapsed .welcome-badge,
+.sidebar.collapsed .menu-divider,
+.sidebar.collapsed a span {
+    opacity: 0;
+    width: 0;
+    pointer-events: none;
+    display: none;
+}
+
+.sidebar.collapsed .admin-header {
+    padding: 28px 10px 22px 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar.collapsed .logo-area {
+    margin: 0;
+}
+
+.sidebar.collapsed .admin-menu {
+    padding: 20px 8px;
+}
+
+.sidebar.collapsed .admin-menu a {
+    justify-content: center;
+    padding: 12px 0;
+    margin: 0 4px;
+    border-radius: 12px;
+}
+
+.sidebar.collapsed .admin-menu a i {
+    margin-right: 0;
+    font-size: 18px;
+}
+
+.sidebar.collapsed .admin-menu a.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    box-shadow: 0 6px 14px -4px var(--primary);
+}
+
+.sidebar.collapsed .admin-menu a.active::before {
+    display: none; /* ลบแถบสีเหลี่ยมด้านข้าง */
+}
+
+/* ==========================================
+   5. TOPBAR DESIGN (Premium Floating Glass Card)
+   ========================================== */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    height: var(--topbar-height);
+    
+    /* แปลงเป็น Floating Topbar สอดรับกับ Sidebar */
+    margin: 20px 20px 0 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    
+    position: sticky;
+    top: 20px;
+    z-index: 90;
+    transition: var(--transition-smooth);
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Hamburger button */
+.toggle-sidebar-btn {
+    border: none;
+    background: var(--slate-100);
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate-700);
+    font-size: 16px;
+    transition: var(--transition-fast);
+}
+
+.toggle-sidebar-btn:hover {
+    background: var(--light-green);
+    color: var(--primary);
+}
+
+.page-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--slate-800);
+    margin: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+    letter-spacing: -0.3px;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Visit site button */
+.btn-visit-site {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: var(--slate-100);
+    color: var(--slate-700) !important;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 12.5px;
+    transition: var(--transition-fast);
+}
+
+.btn-visit-site:hover {
+    background-color: var(--primary);
+    color: white !important;
+    box-shadow: 0 6px 14px rgba(5, 150, 105, 0.2);
+    transform: translateY(-1.5px);
+}
+
+/* User Profile Badge */
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 12px 4px 4px;
+    background-color: var(--slate-50);
+    border: 1px solid var(--slate-200);
+    border-radius: 50px;
+    cursor: default;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: white;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13.5px;
+    text-transform: uppercase;
+    box-shadow: 0 0 0 3px var(--light-green);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--slate-800);
+    line-height: 1.2;
+}
+
+.user-role {
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================
+   6. CARDS & CONTAINERS (Subtle Depth & Floating Cards)
+   ========================================== */
+.card, .admin-form, .file-section {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover, .admin-form:hover, .file-section:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--border-hover);
+}
+
+h2 {
+    color: var(--slate-800);
+    border-bottom: 2px solid var(--slate-100);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+    font-size: 20px;
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.admin-menu {
-    list-style: none;
-    padding: 20px 10px;
-    margin: 0;
-}
-
-.admin-menu li {
-    margin-bottom: 5px;
-}
-
-/* ลิงก์ในเมนู (สำคัญมาก: ลบขีดเส้นใต้ และใส่สีขาว) */
-.admin-menu a {
-    display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    color: var(--sidebar-text);
-    text-decoration: none !important;
-    /* บังคับลบขีดเส้นใต้ */
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    border-left: 3px solid transparent;
-}
-
-/* เอฟเฟกต์ตอนชี้เมาส์ */
-.admin-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: #fff;
-    padding-left: 20px;
-    /* ขยับขวาเล็กน้อย */
-    border-left-color: var(--primary);
-}
-
-.admin-menu a i,
-.admin-menu a span {
-    /* กรณีมีไอคอน */
-    margin-right: 10px;
-}
-
-/* --- Main Content (เนื้อหาขวา) --- */
-.main-content {
-    flex: 1;
-    padding: 40px;
-    overflow-y: auto;
-    width: 100%;
-    /* กันไม่ให้ล้น */
-}
-
-/* --- Dashboard Widgets --- */
+/* ==========================================
+   7. DASHBOARD STATS WIDGETS
+   ========================================== */
 .dashboard-header {
-    background: linear-gradient(135deg, var(--primary) 0%, #c2410c 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
     color: white;
-    padding: 30px;
-    border-radius: 16px;
+    padding: 32px 35px;
+    border-radius: var(--radius-lg);
     margin-bottom: 30px;
-    box-shadow: 0 10px 20px rgba(249, 115, 22, 0.2);
+    box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-header::before {
+    content: '';
+    position: absolute;
+    right: -50px;
+    top: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.dashboard-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -0.5px;
+}
+
+.dashboard-header p {
+    margin: 8px 0 0 0;
+    opacity: 0.85;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .stats-grid {
@@ -135,111 +637,601 @@ body {
 
 .stat-card {
     background: white;
-    padding: 25px;
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    transition: transform 0.3s;
-    text-decoration: none;
-    display: block;
-    border: 1px solid #f1f5f9;
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-smooth);
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 0;
+    border-radius: 0 0 0 var(--radius-lg);
+    transition: var(--transition-smooth);
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--border-hover);
+}
+
+.stat-card:hover::after {
+    width: 100%;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.stat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
 }
 
 .stat-card h3 {
     margin-top: 0;
-    color: #64748b;
-    font-size: 14px;
+    margin-bottom: 0;
+    color: var(--text-muted);
+    font-size: 13.5px;
     text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.stat-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
 }
 
 .stat-card .number {
-    font-size: 36px;
-    font-weight: 700;
-    color: var(--primary);
-    margin-top: 10px;
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--slate-800);
+    margin-top: auto;
+    line-height: 1.1;
 }
 
-/* --- Forms & Cards --- */
-.admin-form,
-.file-section,
-.card {
-    background: white;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    margin-bottom: 30px;
-    border: 1px solid #e2e8f0;
+/* Stat color variants */
+.stat-card.banners {
+    border-left: 4px solid var(--primary);
+}
+.stat-card.banners::after { background-color: var(--primary); }
+.stat-card.banners .stat-icon { background: var(--light-green); color: var(--primary); }
+
+.stat-card.directors {
+    border-left: 4px solid var(--info);
+}
+.stat-card.directors::after { background-color: var(--info); }
+.stat-card.directors .stat-icon { background: var(--info-light); color: var(--info); }
+
+.stat-card.announcements {
+    border-left: 4px solid var(--success);
+}
+.stat-card.announcements::after { background-color: var(--success); }
+.stat-card.announcements .stat-icon { background: var(--success-light); color: var(--success); }
+
+.stat-card.files {
+    border-left: 4px solid var(--danger);
+}
+.stat-card.files::after { background-color: var(--danger); }
+.stat-card.files .stat-icon { background: var(--danger-light); color: var(--danger); }
+
+.two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 30px;
 }
 
-h2 {
-    color: var(--text-main);
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 15px;
-    margin-bottom: 25px;
+/* ==========================================
+   8. FORMS & INPUT CONTROLS (Elegant Glow)
+   ========================================== */
+.form-group {
+    margin-bottom: 22px;
 }
 
-/* --- Buttons --- */
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--slate-700);
+    font-size: 14px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--slate-300);
+    border-radius: var(--radius-md);
+    font-size: 14.5px;
+    background-color: var(--slate-50);
+    transition: var(--transition-smooth);
+    color: var(--slate-800);
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background-color: white;
+    box-shadow: 0 0 0 4px var(--light-green);
+}
+
+/* Styled help text */
+.form-help {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* ==========================================
+   9. BUTTONS SYSTEM (Premium Dynamic Gradients)
+   ========================================== */
 .btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background: var(--primary);
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10.5px 22px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    color: white !important;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     cursor: pointer;
     font-weight: 600;
-    text-decoration: none;
-    transition: background 0.3s;
+    font-size: 13.5px;
+    text-decoration: none !important;
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 10px rgba(5, 150, 105, 0.15);
 }
 
 .btn:hover {
-    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(5, 150, 105, 0.25);
+    background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
 }
 
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Button Variants */
 .btn-danger {
-    background: #ef4444;
+    background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15);
 }
-
 .btn-danger:hover {
-    background: #dc2626;
+    background: linear-gradient(135deg, #dc2626 0%, var(--danger) 100%);
+    box-shadow: 0 8px 18px rgba(239, 68, 68, 0.25);
 }
 
-/* --- Table --- */
-.table,
-.admin-table {
+.btn-secondary {
+    background: linear-gradient(135deg, var(--slate-600) 0%, var(--slate-700) 100%);
+    box-shadow: 0 4px 10px rgba(71, 85, 105, 0.15);
+}
+.btn-secondary:hover {
+    background: linear-gradient(135deg, var(--slate-700) 0%, var(--slate-600) 100%);
+    box-shadow: 0 8px 18px rgba(71, 85, 105, 0.25);
+}
+
+/* Outline Buttons */
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--slate-300);
+    color: var(--slate-700) !important;
+    box-shadow: none;
+}
+.btn-outline:hover {
+    background: var(--slate-100);
+    border-color: var(--slate-400);
+    color: var(--slate-800) !important;
+    box-shadow: none;
+    transform: translateY(-2px);
+}
+
+/* ==========================================
+   10. TABLES DESIGN (Modern Responsive)
+   ========================================== */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--slate-200);
+    background: white;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    box-shadow: var(--shadow-sm);
+}
+
+.main-content table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
 }
 
-.table th,
-.admin-table th {
-    background: #f8fafc;
-    padding: 15px;
+.main-content th {
+    background: var(--slate-50);
+    color: var(--slate-600);
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--slate-200);
     text-align: left;
-    color: #64748b;
+}
+
+.main-content td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--slate-100);
+    color: var(--slate-700);
+    font-size: 14px;
+    vertical-align: middle;
+    transition: var(--transition-fast);
+}
+
+.main-content tr:last-child td {
+    border-bottom: none;
+}
+
+.main-content tr:hover td {
+    background-color: var(--slate-50);
+}
+
+/* Mini Compact Action Buttons inside Tables */
+.main-content td a.btn,
+.main-content td button.btn,
+.main-content td .action-btn {
+    padding: 6px 12px;
+    font-size: 12.5px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
-    border-bottom: 2px solid #e2e8f0;
+    margin: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: none !important;
+    transform: none !important;
+    transition: var(--transition-fast);
 }
 
-.table td,
-.admin-table td {
-    padding: 15px;
-    border-bottom: 1px solid #e2e8f0;
+.main-content td .btn-primary,
+.main-content td a[href*="edit"] {
+    background: var(--light-green);
+    color: var(--primary) !important;
+    border: 1px solid rgba(5, 150, 105, 0.1);
+}
+.main-content td .btn-primary:hover,
+.main-content td a[href*="edit"]:hover {
+    background: var(--primary);
+    color: white !important;
 }
 
-.table tr:hover td {
-    background-color: #f1f5f9;
+.main-content td .btn-danger,
+.main-content td button[class*="danger"] {
+    background: var(--danger-light);
+    color: var(--danger) !important;
+    border: 1px solid rgba(239, 68, 68, 0.1);
+}
+.main-content td .btn-danger:hover,
+.main-content td button[class*="danger"]:hover {
+    background: var(--danger);
+    color: white !important;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .sidebar {
-        display: none;
-        /* ซ่อนเมนูในมือถือ (หรือต้องเพิ่ม JS toggle) */
+/* Beautiful Links in Tables */
+.main-content table a:not(.btn) {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+.main-content table a:not(.btn):hover {
+    text-decoration: underline;
+    color: var(--primary-hover);
+}
+
+/* ==========================================
+   11. BADGES SYSTEM
+   ========================================== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 11.5px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.badge-success, .badge-active, .status-active {
+    background-color: var(--success-light);
+    color: var(--success);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badge-danger, .badge-inactive, .status-inactive {
+    background-color: var(--danger-light);
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.badge-general { background: var(--slate-100); color: var(--slate-600); border: 1px solid var(--slate-200); }
+.badge-download { background: var(--info-light); color: var(--info); border: 1px solid rgba(14, 165, 233, 0.2); }
+.badge-procurement { background: var(--warning-light); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
+.badge-ita { background: #f3e8ff; color: #6b21a8; border: 1px solid rgba(107, 33, 168, 0.2); }
+
+/* ==========================================
+   12. UPLOAD AREA (Modern Flat Dashed)
+   ========================================== */
+.upload-area, .upload-box {
+    border: 2px dashed var(--slate-300);
+    border-radius: var(--radius-lg);
+    padding: 40px 20px;
+    text-align: center;
+    background: var(--slate-50);
+    transition: var(--transition-smooth);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.upload-area:hover, .upload-box:hover {
+    background: var(--lighter-green);
+    border-color: var(--primary);
+}
+
+.upload-icon {
+    font-size: 32px;
+    color: var(--slate-400);
+}
+.upload-area:hover .upload-icon {
+    color: var(--primary);
+}
+
+.thumbnail {
+    width: 90px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--slate-200);
+    transition: var(--transition-fast);
+}
+.thumbnail:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-md);
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--slate-200);
+}
+
+/* ==========================================
+   13. THEME SETTINGS PAGE OVERRIDES
+   ========================================== */
+/* จัดระเบียบ theme-grid */
+.theme-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 30px;
+}
+
+@media (max-width: 1100px) {
+    .theme-grid {
+        grid-template-columns: 1fr;
     }
+}
+
+/* ==========================================
+   14. RESPONSIVE DESIGN & OVERLAYS
+   ========================================== */
+
+/* Backdrop overlay สำหรับ mobile */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 99;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition-smooth);
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Responsive breakpoints */
+
+/* Desktop Collapsed Wrapper */
+@media (min-width: 993px) {
+    .sidebar.collapsed + .main-content-wrapper .topbar {
+        /* ปรับดีไซน์ topbar ถ้าจำเป็น */
+    }
+}
+
+/* Tablet & Mobile Screens */
+@media (max-width: 992px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+        height: 100vh;
+        z-index: 1000;
+        width: var(--sidebar-width);
+        
+        /* รีเซ็ตดีไซน์ Floating Card สำหรับ Desktop ให้พอดีขอบจอมือถือ */
+        margin: 0;
+        border-radius: 0 24px 24px 0; /* โค้งมนเฉพาะฝั่งขวายามสไลด์ออก */
+        border: none;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 10px 0 40px rgba(2, 6, 23, 0.4);
+    }
+    
+    .sidebar.mobile-active {
+        transform: translateX(0);
+    }
+    
+    .sidebar .admin-header {
+        border-radius: 0 24px 0 0;
+    }
+    
+    .topbar {
+        /* รีเซ็ต Floating Topbar ให้กะทัดรัดและสวยงามบนจอมือถือ */
+        margin: 15px 15px 0 15px;
+        border-radius: 16px;
+        padding: 10px 20px;
+        height: auto;
+        top: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    }
+    
+    .main-content {
+        padding: 15px;
+    }
+    
+    .two-column {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile Screens only */
+@media (max-width: 576px) {
+    .topbar-right .btn-visit-site span {
+        display: none; /* ซ่อนเท็กซ์เหลือแต่ไอคอน */
+    }
+    
+    .topbar-right .btn-visit-site {
+        padding: 8px;
+    }
+    
+    .user-info {
+        display: none; /* ซ่อนโปรไฟล์เท็กซ์ เหลือแต่วงกลม */
+    }
+    
+    .user-badge {
+        padding: 4px;
+    }
+    
+    .page-title {
+        font-size: 16px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================
+   15. PR GALLERY & IMAGE MANAGEMENT STYLES
+   ========================================== */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 24px;
+    width: 100%;
+}
+
+.gallery-card {
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+}
+
+.gallery-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-hover);
+}
+
+.gallery-card .img-container {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    background: var(--slate-100);
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.gallery-card .img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* จัดภาพฟิตกล่องอย่างพรีเมียม ไม่บิดเบี้ยว */
+    transition: var(--transition-smooth);
+}
+
+.gallery-card:hover .img-container img {
+    transform: scale(1.06);
+}
+
+.gallery-card .card-body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.gallery-card .card-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--slate-800);
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gallery-card .card-date {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+/* ป้องกัน Sidebar โดนดันเบียดหดตัวบนจอคอม */
+.sidebar {
+    flex-shrink: 0 !important;
 }

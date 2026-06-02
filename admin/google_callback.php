@@ -7,7 +7,7 @@ require_once '../vendor/autoload.php'; // เรียกใช้ Library Googl
 $client = new Google_Client();
 $client->setClientId('xxx');
 $client->setClientSecret('xxx');
-$client->setRedirectUri('http://localhost/sso/admin/google_callback.php'); 
+$client->setRedirectUri('http://localhost/chaiyo_home/admin/google_callback.php'); 
 $client->addScope('email');
 $client->addScope('profile');
 

@@ -9,7 +9,7 @@ if (empty($id)) {
     exit;
 }
 
-// ดึงข้อมูลประกาศ
+// ดึงข้อมูลประกาศหลัก
 try {
     $stmt = $pdo->prepare("SELECT * FROM announcements WHERE id = ? AND status = 'active'");
     $stmt->execute([$id]);
@@ -27,10 +27,45 @@ try {
 // ดึงข้อมูลหน่วยงาน
 $orgInfo = $pdo->query("SELECT * FROM organization_info LIMIT 1")->fetch();
 
-// ดึงประกาศที่เกี่ยวข้อง
-$related = $pdo->query(
-    "SELECT * FROM announcements WHERE status='active' AND id != $id ORDER BY created_at DESC LIMIT 3"
-)->fetchAll();
+// ดึงไฟล์แนบ (Multiple Attachments)
+$attachments = $pdo->query("SELECT * FROM announcement_attachments WHERE announcement_id = " . (int)$id)->fetchAll(PDO::FETCH_ASSOC);
+
+// ฟังก์ชันสำหรับแปลงชื่อหมวดหมู่เป็นภาษาไทย (เอาไว้ใช้แสดงชื่อหัวข้อ)
+function getCategoryName($category)
+{
+    return match ($category) {
+        'general' => 'ประกาศทั่วไป',
+        'download' => 'ดาวน์โหลด',
+        'procurement' => 'จัดซื้อ-จัดจ้าง',
+        'ita' => 'ประกาศ ITA',
+        default => 'ประกาศ',
+    };
+}
+
+// --- ส่วนที่แก้ไขใหม่: ดึงข้อมูลของทุกหมวดหมู่ ---
+$categories_config = [
+    'general' => 'ประกาศทั่วไป',
+    'download' => 'ดาวน์โหลด',
+    'procurement' => 'จัดซื้อ-จัดจ้าง',
+    'ita' => 'ประกาศ ITA'
+];
+
+$all_cats_data = [];
+
+foreach ($categories_config as $cat_key => $cat_name) {
+    // ดึง 3 รายการล่าสุดของแต่ละหมวด (ยกเว้นเรื่องที่เปิดอยู่ปัจจุบัน)
+    $stmt_cat = $pdo->prepare("SELECT id, title, created_at FROM announcements WHERE status='active' AND category = ? AND id != ? ORDER BY created_at DESC LIMIT 3");
+    $stmt_cat->execute([$cat_key, $id]);
+    $items = $stmt_cat->fetchAll();
+
+    // ถ้าหมวดนั้นมีข้อมูล ให้เก็บใส่ array ไว้แสดงผล
+    if (!empty($items)) {
+        $all_cats_data[] = [
+            'name' => $cat_name,
+            'items' => $items
+        ];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -41,6 +76,8 @@ $related = $pdo->query(
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($announce['title']); ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <?php echo get_theme_style_block($pdo); ?>
     <style>
         * {
             margin: 0;
@@ -49,11 +86,18 @@ $related = $pdo->query(
         }
 
         :root {
-            --primary: #f97316;
-            --secondary: #ea580c;
-            --text: #333;
-            --light: #f5f7fa;
-            --border: #ecf0f1;
+            --primary: #059669;
+            --secondary: #047857;
+            --accent: #10b981;
+            --light-green: #d1fae5;
+            --lighter-green: #f0fdf4;
+            --text: #1f2937;
+            --text-gray: #6b7280;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --shadow-sm: 0 2px 8px rgba(5, 150, 105, 0.08);
+            --shadow-md: 0 4px 12px rgba(5, 150, 105, 0.12);
+            --shadow-lg: 0 8px 24px rgba(5, 150, 105, 0.15);
         }
 
         html {
@@ -162,6 +206,24 @@ $related = $pdo->query(
             font-size: 16px;
         }
 
+        /* Download Button Style */
+        .download-btn {
+            display: inline-block;
+            background: #2563eb;
+            /* Blue color for download */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 25px 0 15px 0;
+            transition: background 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #1d4ed8;
+        }
+
         .article-content {
             color: #555;
             font-size: 15px;
@@ -222,9 +284,31 @@ $related = $pdo->query(
             text-decoration: underline;
         }
 
+        /* Styles for Grouped Sidebar Items */
+        .category-group {
+            margin-bottom: 25px;
+        }
+
+        .category-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .category-header {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 10px;
+            border-left: 3px solid var(--secondary);
+            padding-left: 8px;
+            background: #fff3e0;
+            padding: 5px 8px;
+            border-radius: 0 4px 4px 0;
+        }
+
         .related-item {
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border);
+            margin-left: 5px;
         }
 
         .related-item:last-child {
@@ -232,23 +316,23 @@ $related = $pdo->query(
         }
 
         .related-link {
-            color: var(--primary);
+            color: #444;
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
             display: block;
-            line-height: 1.5;
+            line-height: 1.4;
             transition: color 0.3s;
         }
 
         .related-link:hover {
-            color: var(--secondary);
+            color: var(--primary);
         }
 
         .related-date {
             font-size: 12px;
             color: #999;
-            margin-top: 5px;
+            margin-top: 4px;
         }
 
         /* Footer */
@@ -344,42 +428,10 @@ $related = $pdo->query(
                 gap: 20px;
             }
         }
-
-        @media (max-width: 480px) {
-            .navbar {
-                padding: 10px 0;
-            }
-
-            .navbar-content {
-                padding: 0 15px;
-            }
-
-            .container {
-                padding: 0 15px;
-            }
-
-            .article {
-                padding: 15px;
-                border-radius: 8px;
-            }
-
-            .article h1 {
-                font-size: 18px;
-            }
-
-            .sidebar-box {
-                padding: 15px;
-            }
-
-            .article-meta {
-                font-size: 12px;
-            }
-        }
     </style>
 </head>
 
 <body>
-    <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-content">
             <h1>🏥 <?php echo sanitize($orgInfo['name'] ?? 'สถาบัน'); ?></h1>
@@ -390,11 +442,9 @@ $related = $pdo->query(
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container">
         <div class="content-wrapper">
-            <!-- Article -->
-            <article class="article">
+            <article class="article" data-aos="fade-up">
                 <h1><?php echo sanitize($announce['title']); ?></h1>
 
                 <div class="article-meta">
@@ -406,16 +456,60 @@ $related = $pdo->query(
                         <i class="fas fa-user"></i>
                         <span>ประกาศจากหน่วยงาน</span>
                     </div>
+                    <div class="meta-item">
+                        <i class="fas fa-layer-group"></i>
+                        <span>หมวดหมู่: <?php echo getCategoryName($announce['category']); ?></span>
+                    </div>
                 </div>
+
+                <?php
+                // Logic for PDF Download Button
+                if (!empty($announce['image'])) {
+                    $filepath = 'uploads/files/' . $announce['image'];
+                    $file_ext = strtolower(pathinfo($announce['image'], PATHINFO_EXTENSION));
+
+                    // Check if file is PDF and exists
+                    if ($file_ext === 'pdf' && file_exists($filepath)) {
+                        echo '<a href="' . htmlspecialchars($filepath) . '" class="download-btn" target="_blank" download>';
+                        echo '    <i class="fas fa-file-pdf"></i> ดาวน์โหลดไฟล์แนบ (PDF)';
+                        echo '</a>';
+                    }
+                }
+                ?>
 
                 <div class="article-content">
                     <?php echo nl2br(sanitize($announce['content'])); ?>
                 </div>
+
+                <?php if (!empty($attachments)): ?>
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+                        <h3 style="font-size: 18px; margin-bottom: 15px; color: #333;"><i class="fas fa-paperclip"></i> เอกสารแนบ</h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <?php foreach ($attachments as $att): ?>
+                                <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" class="download-btn" style="margin:0; background-color: #f3f4f6; color: #1f2937; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between;">
+                                    <span><i class="fas fa-file-alt" style="margin-right: 10px; color: var(--primary);"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'ดาวน์โหลดเอกสาร'); ?></span>
+                                    <i class="fas fa-download" style="color: var(--text-gray);"></i>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <?php
+                // Display image if it's not a PDF and is present
+                if (!empty($announce['image'])) {
+                    $filepath = 'uploads/files/' . $announce['image'];
+                    $file_ext = strtolower(pathinfo($announce['image'], PATHINFO_EXTENSION));
+                    if ($file_ext !== 'pdf' && file_exists($filepath)) {
+                        echo '<div style="text-align: center; margin-top: 30px;">';
+                        echo '<img src="' . htmlspecialchars($filepath) . '" alt="ภาพประกอบประกาศ">';
+                        echo '</div>';
+                    }
+                }
+                ?>
             </article>
 
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <!-- Contact Box -->
+            <aside class="sidebar" data-aos="fade-left" data-aos-delay="100">
                 <div class="sidebar-box">
                     <h3><i class="fas fa-phone" style="margin-right: 8px;"></i>ติดต่อเรา</h3>
                     <div class="contact-info">
@@ -446,56 +540,79 @@ $related = $pdo->query(
                     </div>
                 </div>
 
-                <!-- Related Announcements -->
                 <div class="sidebar-box">
-                    <h3><i class="fas fa-newspaper" style="margin-right: 8px;"></i>ประกาศอื่นๆ</h3>
-                    <?php if (!empty($related)): ?>
-                        <?php foreach ($related as $rel): ?>
-                            <div class="related-item">
-                                <a href="announcement.php?id=<?php echo $rel['id']; ?>" class="related-link">
-                                    <?php echo sanitize(substr($rel['title'], 0, 50)); ?>...
-                                </a>
-                                <div class="related-date">
-                                    <?php echo date('d/m/Y', strtotime($rel['created_at'])); ?>
+                    <h3><i class="fas fa-newspaper" style="margin-right: 8px;"></i>ประกาศทั้งหมด</h3>
+
+                    <?php if (!empty($all_cats_data)): ?>
+                        <?php foreach ($all_cats_data as $group): ?>
+
+                            <div class="category-group">
+                                <div class="category-header">
+                                    <?php echo $group['name']; ?>
                                 </div>
+
+                                <?php foreach ($group['items'] as $item): ?>
+                                    <div class="related-item">
+                                        <a href="announcement.php?id=<?php echo $item['id']; ?>" class="related-link">
+                                            <?php echo sanitize($item['title']); ?>
+                                        </a>
+                                        <div class="related-date">
+                                            <i class="far fa-clock" style="font-size: 10px;"></i>
+                                            <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
+
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <p style="color: #999; font-size: 13px;">ไม่มีประกาศอื่น</p>
+                        <p style="color: #999; font-size: 13px;">ยังไม่มีข้อมูลประกาศ</p>
                     <?php endif; ?>
+
                 </div>
             </aside>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h4>เกี่ยวกับเรา</h4>
+                <h3>เกี่ยวกับเรา</h3>
                 <p><?php echo sanitize($orgInfo['description'] ?? ''); ?></p>
             </div>
-
             <div class="footer-section">
-                <h4>เมนูหลัก</h4>
-                <a href="index.php">หน้าแรก</a><br>
-                <a href="index.php#directors">ผู้บริหาร</a><br>
-                <a href="index.php#announcements">ประกาศ</a>
+                <h3>📞 ติดต่อเรา</h3>
+                <ul>
+                    <?php if ($orgInfo && $orgInfo['phone']): ?>
+                        <li><a href="tel:<?php echo htmlspecialchars($orgInfo['phone']); ?>">📱
+                                <?php echo sanitize($orgInfo['phone']); ?></a></li>
+                    <?php endif; ?>
+                    <?php if ($orgInfo && $orgInfo['email']): ?>
+                        <li><a href="mailto:<?php echo htmlspecialchars($orgInfo['email']); ?>">✉️
+                                <?php echo sanitize($orgInfo['email']); ?></a></li>
+                    <?php endif; ?>
+                </ul>
             </div>
-
             <div class="footer-section">
-                <h4>เข้าถึง</h4>
-                <a href="admin/login.php">ระบบแอดมิน</a><br>
-                <a href="index.php">กลับหน้าแรก</a>
+                <h3>เมนูด่วน</h3>
+                <ul>
+                    <li><a href="#home">หน้าแรก</a></li>
+                    <li><a href="#pr">ประชาสัมพันธ์</a></li>
+                    <li><a href="#news">ประกาศ</a></li>
+                    <li><a href="admin/login.php">สำหรับเจ้าหน้าที่</a></li>
+                </ul>
             </div>
         </div>
-
-        <div class="footer-bottom">
-            <p>&copy; 2025 <?php echo sanitize($orgInfo['name'] ?? 'สถาบันอุตสาหกรรมสุขภาพ'); ?>. All rights reserved.
-            </p>
-        </div>
+     
     </footer>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+    </script>
 </body>
 
 </html>

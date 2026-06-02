@@ -1,7 +1,6 @@
 <?php
-// admin/pages/files.php - จัดการรูปประชาสัมพันธ์ (แก้ไขใหม่)
+// admin/pages/files.php - จัดการรูปทั่วไปและประชาสัมพันธ์
 
-// ตรวจสอบการเข้าสู่ระบบ
 if (!isset($_SESSION['admin_id'])) {
     header('Location: ../login.php');
     exit;
@@ -9,290 +8,215 @@ if (!isset($_SESSION['admin_id'])) {
 
 $message = '';
 
+// === การจัดการไฟล์ ===
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $action = $_POST['action'] ?? '';
 
-    // 1. ส่วนอัปโหลดไฟล์
-    if ($action == 'upload' && isset($_FILES['file'])) {
+    // 1. อัปโหลดรูปภาพ
+    if ($action == 'upload' && isset($_FILES['file']['error']) === 0) {
         $file = $_FILES['file'];
-        // กำหนดหมวดหมู่ตายตัวว่าเป็น 'pr_image'
-        $category = 'pr_image';
-
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        // อนุญาตเฉพาะไฟล์รูปภาพ
-        $allowedExt = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
-        if (in_array($ext, $allowedExt)) {
-            $filename = time() . '_' . md5(uniqid()) . '.' . $ext;
-            $uploadPath = '../uploads/files/';
+        if (!in_array($ext, $allowed)) {
+            $message = '<div class="alert alert-error shadow-sm mb-6 flex items-center gap-2"><i class="fas fa-times-circle text-lg"></i> รองรับเฉพาะไฟล์รูปภาพเท่านั้น (JPG, PNG, GIF, WebP)</div>';
+        } elseif ($file['size'] > 10 * 1024 * 1024) { // 10MB
+            $message = '<div class="alert alert-error shadow-sm mb-6 flex items-center gap-2"><i class="fas fa-times-circle text-lg"></i> ขนาดไฟล์ต้องไม่เกิน 10MB</div>';
+        } else {
+            $filename = time() . '_' . bin2hex(random_bytes(8)) . '.' . $ext;
+            $path = '../uploads/files/' . $filename;
 
-            // สร้างโฟลเดอร์ถ้ายังไม่มี
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
+            if (!is_dir('../uploads/files')) {
+                mkdir('../uploads/files', 0755, true);
             }
 
-            if (move_uploaded_file($file['tmp_name'], $uploadPath . $filename)) {
-                // บันทึกชื่อไฟล์เดิมเพื่อใช้เป็น caption (ถ้าต้องการ)
+            if (move_uploaded_file($file['tmp_name'], $path)) {
                 $originalName = pathinfo($file['name'], PATHINFO_FILENAME);
 
-                $stmt = $pdo->prepare(
-                    "INSERT INTO files (filename, filepath, file_type, category, status, created_at) 
-                     VALUES (?, ?, ?, ?, 'active', NOW())"
-                );
-                $stmt->execute([$originalName, $filename, $ext, $category]);
-                $message = '<div class="alert alert-success">✓ อัปโหลดรูปภาพสำเร็จ</div>';
+                $stmt = $pdo->prepare("INSERT INTO files (filename, filepath, file_type, category, status, created_at) VALUES (?, ?, ?, 'pr_image', 'active', NOW())");
+                $stmt->execute([$originalName, $filename, $ext]);
+
+                $message = '<div class="alert alert-success shadow-sm mb-6 flex items-center gap-2"><i class="fas fa-check-circle text-lg"></i> อัปโหลดรูปภาพเรียบร้อยแล้ว</div>';
             } else {
-                $message = '<div class="alert alert-danger">✗ ไม่สามารถย้ายไฟล์ได้</div>';
+                $message = '<div class="alert alert-error shadow-sm mb-6 flex items-center gap-2"><i class="fas fa-times-circle text-lg"></i> ไม่สามารถบันทึกไฟล์ได้</div>';
             }
-        } else {
-            $message = '<div class="alert alert-danger">✗ อนุญาตเฉพาะไฟล์รูปภาพ (JPG, PNG, GIF) เท่านั้น</div>';
         }
     }
 
-    // 2. ส่วนลบไฟล์
-    elseif ($action == 'delete') {
-        $id = $_POST['id'] ?? '';
-        $file = $pdo->query("SELECT filepath FROM files WHERE id=$id")->fetch();
+    // 2. ลบรูปภาพ
+    elseif ($action == 'delete' && !empty($_POST['id'])) {
+        $id = (int)$_POST['id'];
 
-        if ($file && file_exists('../uploads/files/' . $file['filepath'])) {
-            unlink('../uploads/files/' . $file['filepath']);
+        $file = $pdo->query("SELECT filepath FROM files WHERE id = $id")->fetchColumn();
+        if ($file && file_exists('../uploads/files/' . $file)) {
+            @unlink('../uploads/files/' . $file);
         }
 
-        $stmt = $pdo->prepare("DELETE FROM files WHERE id=?");
-        $stmt->execute([$id]);
-        $message = '<div class="alert alert-success">✓ ลบรูปภาพเรียบร้อย</div>';
+        $pdo->prepare("DELETE FROM files WHERE id = ?")->execute([$id]);
+        $message = '<div class="alert alert-success shadow-sm mb-6 flex items-center gap-2"><i class="fas fa-check-circle text-lg"></i> ลบรูปภาพเรียบร้อยแล้ว</div>';
     }
 }
 
-// ดึงข้อมูลไฟล์ (กรองเฉพาะที่เป็นรูปภาพ หรือหมวด pr_image)
-$files = $pdo->query("SELECT * FROM files WHERE file_type IN ('jpg', 'jpeg', 'png', 'gif', 'webp') ORDER BY created_at DESC")->fetchAll();
+// ดึงรูปทั้งหมด (เฉพาะรูปภาพ)
+$files = $pdo->query("SELECT * FROM files WHERE file_type IN ('jpg','jpeg','png','gif','webp') ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<style>
-    /* สไตล์สำหรับกล่องอัปโหลด */
-    .upload-area {
-        border: 2px dashed #cbd5e1;
-        border-radius: 12px;
-        padding: 40px;
-        text-align: center;
-        background: #f8fafc;
-        cursor: pointer;
-        transition: all 0.3s;
-        position: relative;
-    }
-
-    .upload-area:hover {
-        background: #fff;
-        border-color: #667eea;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
-    }
-
-    /* สไตล์สำหรับ Grid แสดงรูปภาพ */
-    .gallery-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-        margin-top: 20px;
-    }
-
-    .gallery-card {
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        overflow: hidden;
-        transition: transform 0.2s, box-shadow 0.2s;
-        position: relative;
-    }
-
-    .gallery-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .img-container {
-        height: 160px;
-        width: 100%;
-        background: #f1f5f9;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-
-    .img-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        /* ทำให้รูปเต็มกรอบสวยงาม */
-        transition: transform 0.3s;
-    }
-
-    .gallery-card:hover .img-container img {
-        transform: scale(1.05);
-    }
-
-    .card-actions {
-        padding: 12px;
-        border-top: 1px solid #e2e8f0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: white;
-    }
-
-    .file-name {
-        font-size: 13px;
-        color: #334155;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 120px;
-        font-weight: 500;
-    }
-
-    /* ตัวอย่างรูปก่อนอัปโหลด (Preview) */
-    #imagePreview {
-        max-width: 100%;
-        max-height: 250px;
-        border-radius: 8px;
-        margin-top: 15px;
-        display: none;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .alert {
-        padding: 12px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-    }
-
-    .alert-success {
-        background: #dcfce7;
-        color: #166534;
-        border: 1px solid #bbf7d0;
-    }
-
-    .alert-danger {
-        background: #fee2e2;
-        color: #991b1b;
-        border: 1px solid #fecaca;
-    }
-</style>
-
-<h2>🖼️ จัดการรูปประชาสัมพันธ์</h2>
-<p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">อัปโหลดรูปภาพกิจกรรม ข่าวสาร
-    หรือภาพทั่วไปเพื่อนำไปแสดงผลบนหน้าเว็บไซต์</p>
+<!-- หัวข้อของหน้า -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+        <h2 class="text-2xl font-extrabold text-base-content flex items-center gap-2.5">
+            <i class="fas fa-folder-open text-primary"></i> คลังรูปภาพและไฟล์สื่อประชาสัมพันธ์
+        </h2>
+        <p class="text-sm text-base-content/60 mt-1">คลังจัดเก็บไฟล์รูปภาพสำหรับข่าวสาร กิจกรรม หรือนำลิงก์รูปไปใช้ประกอบในหน้าเนื้อหาหลัก</p>
+    </div>
+</div>
 
 <?php echo $message; ?>
 
-<div class="admin-form">
-    <form method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="action" value="upload">
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
+    <!-- ฟอร์มอัปโหลดรูป (1 ส่วน) -->
+    <div class="card bg-base-100 shadow-xl border border-base-200">
+        <div class="card-body">
+            <h3 class="card-title text-lg font-bold text-base-content flex items-center gap-2 border-b border-base-200 pb-3 mb-2">
+                <i class="fas fa-cloud-upload-alt text-primary"></i> อัปโหลดไฟล์สื่อใหม่
+            </h3>
+            
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                <input type="hidden" name="action" value="upload">
 
-        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-            <div id="uploadPlaceholder">
-                <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #94a3b8; margin-bottom: 15px;"></i>
-                <h3 style="color: #475569; margin: 0 0 5px 0;">คลิกเพื่อเลือกรูปภาพ</h3>
-                <p style="color: #94a3b8; font-size: 13px; margin: 0;">รองรับ JPG, PNG, GIF (สูงสุด 10MB)</p>
-            </div>
-
-            <img id="imagePreview" src="#" alt="ตัวอย่างรูปภาพ">
-
-            <input type="file" id="fileInput" name="file" accept="image/*" required style="display: none;"
-                onchange="showPreview(this)">
-        </div>
-
-        <div style="margin-top: 15px; text-align: center;">
-            <button type="submit" class="btn btn-primary" style="padding: 10px 30px;">
-                <i class="fas fa-save"></i> บันทึกรูปภาพ
-            </button>
-        </div>
-    </form>
-</div>
-
-<h3 style="margin-top: 30px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0;">
-    📸 รูปภาพทั้งหมด (<?php echo count($files); ?>)
-</h3>
-
-<?php if (empty($files)): ?>
-    <div
-        style="text-align: center; padding: 50px; color: #94a3b8; background: white; border-radius: 12px; margin-top: 20px;">
-        <i class="fas fa-images" style="font-size: 40px; margin-bottom: 15px;"></i>
-        <p>ยังไม่มีรูปภาพในระบบ</p>
-    </div>
-<?php else: ?>
-    <div class="gallery-grid">
-        <?php foreach ($files as $file): ?>
-            <div class="gallery-card">
-                <div class="img-container">
-                    <img src="../uploads/files/<?php echo htmlspecialchars($file['filepath']); ?>"
-                        alt="<?php echo htmlspecialchars($file['filename']); ?>" loading="lazy">
-                </div>
-
-                <div class="card-actions">
-                    <div title="<?php echo htmlspecialchars($file['filename']); ?>">
-                        <div class="file-name"><?php echo htmlspecialchars($file['filename']); ?></div>
-                        <small style="font-size: 10px; color: #94a3b8;">
-                            <?php echo date('d/m/Y', strtotime($file['created_at'])); ?>
-                        </small>
+                <!-- อัปโหลดดีไซน์พรีเมียมแบบลากวางไฟล์ -->
+                <div class="form-control">
+                    <label class="label py-1.5">
+                        <span class="label-text font-bold text-base-content/85">เลือกไฟล์รูปภาพ</span>
+                    </label>
+                    
+                    <div class="border-2 border-dashed border-base-300 rounded-2xl p-8 text-center cursor-pointer hover:border-primary hover:bg-primary/5 transition duration-200 flex flex-col items-center justify-center min-h-[220px] relative overflow-hidden group select-none" id="uploadArea">
+                        <div id="uploadPlaceholder" class="flex flex-col items-center justify-center gap-2">
+                            <i class="fas fa-images text-4xl text-base-content/30 group-hover:text-primary group-hover:scale-110 transition duration-200"></i>
+                            <span class="text-xs font-bold text-base-content/85 group-hover:text-primary">คลิกหรือลากรูปภาพมาวางที่นี่</span>
+                            <span class="text-[10px] text-base-content/50">JPG, PNG, GIF, WebP (สูงสุด 10MB)</span>
+                        </div>
+                        <!-- พรีวิวก่อนบันทึก -->
+                        <img id="imagePreview" src="#" alt="Preview" class="hidden absolute inset-0 w-full h-full object-contain bg-base-200/80 p-2">
                     </div>
 
-                    <form method="POST" onsubmit="return confirm('ยืนยันการลบรูปนี้?');">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="id" value="<?php echo $file['id']; ?>">
-                        <button type="submit" class="btn btn-sm btn-danger" style="padding: 5px 10px;">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </form>
+                    <input type="file" id="fileInput" name="file" accept="image/*" class="hidden">
                 </div>
-            </div>
-        <?php endforeach; ?>
+
+                <div class="card-actions justify-end pt-2">
+                    <button type="submit" class="btn btn-primary w-full gap-2">
+                        <i class="fas fa-save"></i> Upload บันทึกรูปภาพ
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-<?php endif; ?>
+
+    <!-- คลังรูปภาพทั้งหมด (2 ส่วน) -->
+    <div class="card bg-base-100 shadow-xl border border-base-200 xl:col-span-2 overflow-hidden">
+        <div class="p-6 pb-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+                <h3 class="card-title text-lg font-bold text-base-content flex items-center gap-2">
+                    <i class="fas fa-photo-video text-primary"></i> คลังรูปภาพทั้งหมดในระบบ
+                </h3>
+                <p class="text-xs text-base-content/55 mt-0.5 font-sans">คลังภาพรวมที่อัปโหลดทั้งหมดเพื่อนำไปเขียนเนื้อหาหรือแนบประกอบเพิ่มเติม</p>
+            </div>
+            <div class="badge badge-neutral font-bold py-3 px-3.5 select-none shrink-0 self-start sm:self-center">
+                ทั้งหมด <?php echo count($files); ?> รูป
+            </div>
+        </div>
+
+        <div class="card-body mt-4">
+            <?php if (empty($files)): ?>
+                <div class="flex flex-col items-center justify-center text-center p-12 bg-base-200/40 rounded-2xl border border-base-200">
+                    <i class="fas fa-file-image text-5xl text-base-content/20 mb-3 animate-pulse"></i>
+                    <h4 class="font-bold text-base text-base-content">ยังไม่มีรูปภาพในคลัง</h4>
+                    <p class="text-xs text-base-content/50 mt-1 max-w-[280px]">เริ่มต้นโดยการอัปโหลดไฟล์แรกของหน่วยงานด้วยเครื่องมือทางด้านซ้าย</p>
+                </div>
+            <?php else: ?>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <?php foreach ($files as $f): ?>
+                        <div class="card bg-base-100 border border-base-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 overflow-hidden group">
+                            <!-- พรีวิวรูปภาพ -->
+                            <figure class="aspect-[4/3] bg-base-300 relative overflow-hidden">
+                                <img src="../uploads/files/<?php echo htmlspecialchars($f['filepath']); ?>"
+                                     alt="<?php echo htmlspecialchars($f['filename']); ?>"
+                                     loading="lazy"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                <span class="absolute top-2 left-2 badge badge-neutral bg-black/60 text-[9px] border-none text-white py-2 px-2.5 font-bold">
+                                    <?php echo strtoupper(htmlspecialchars($f['file_type'])); ?>
+                                </span>
+                            </figure>
+                            
+                            <div class="p-3.5 flex flex-col justify-between flex-1 gap-2">
+                                <div class="min-w-0">
+                                    <div class="font-bold text-xs text-base-content line-clamp-2 min-h-[32px] break-all leading-relaxed" 
+                                         title="<?php echo htmlspecialchars($f['filename']); ?>">
+                                        <?php echo htmlspecialchars($f['filename']); ?>
+                                    </div>
+                                    <div class="text-[10px] text-base-content/50 flex items-center gap-1 mt-1 font-semibold">
+                                        <i class="far fa-clock"></i>
+                                        <?php echo date('d/m/Y H:i', strtotime($f['created_at'])); ?>
+                                    </div>
+                                </div>
+                                
+                                <form method="POST" onsubmit="return confirm('ยืนยันลบรูปภาพนี้หรือไม่?');" class="mt-1">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?php echo $f['id']; ?>">
+                                    <button type="submit" class="btn btn-error btn-outline btn-xs w-full gap-1 py-2 h-auto text-[10px]">
+                                        <i class="fa-solid fa-trash-can"></i> ลบรูปภาพ
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
 
 <script>
-    // ฟังก์ชันแสดงตัวอย่างรูปก่อนอัปโหลด
-    function showPreview(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('imagePreview');
+    const placeholder = document.getElementById('uploadPlaceholder');
 
-            reader.onload = function (e) {
-                // ซ่อน Placeholder
-                document.getElementById('uploadPlaceholder').style.display = 'none';
+    // คลิกเพื่อเปิดเลือกไฟล์
+    uploadArea.addEventListener('click', () => fileInput.click());
 
-                // แสดงรูป Preview
-                var preview = document.getElementById('imagePreview');
+    // Preview เมื่อเลือกไฟล์
+    fileInput.addEventListener('change', function() {
+        if (this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
                 preview.src = e.target.result;
-                preview.style.display = 'inline-block';
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
             }
-
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(this.files[0]);
         }
-    }
+    });
 
     // Drag & Drop
-    const uploadArea = document.querySelector('.upload-area');
-    const fileInput = document.getElementById('fileInput');
-
-    uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.style.borderColor = '#667eea';
-        uploadArea.style.background = '#f1f5f9';
+    ['dragenter', 'dragover'].forEach(event => {
+        uploadArea.addEventListener(event, e => {
+            e.preventDefault();
+            uploadArea.classList.add('border-primary', 'bg-primary/5');
+        });
     });
 
-    uploadArea.addEventListener('dragleave', () => {
-        uploadArea.style.borderColor = '#cbd5e1';
-        uploadArea.style.background = '#f8fafc';
+    ['dragleave', 'drop'].forEach(event => {
+        uploadArea.addEventListener(event, e => {
+            e.preventDefault();
+            uploadArea.classList.remove('border-primary', 'bg-primary/5');
+        });
     });
 
-    uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.style.borderColor = '#cbd5e1';
-        uploadArea.style.background = '#f8fafc';
-
-        if (e.dataTransfer.files.length > 0) {
+    uploadArea.addEventListener('drop', e => {
+        if (e.dataTransfer.files.length) {
             fileInput.files = e.dataTransfer.files;
-            showPreview(fileInput);
+            fileInput.dispatchEvent(new Event('change'));
         }
     });
 </script>

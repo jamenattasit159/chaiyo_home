@@ -30,6 +30,7 @@ $sidebarButtons = $pdo->query("SELECT * FROM sidebar_buttons WHERE status='activ
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page['title']); ?> - <?php echo htmlspecialchars($orgInfo['name']); ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         /* CSS พื้นฐาน เหมือนหน้า Index */
         * {
@@ -39,12 +40,22 @@ $sidebarButtons = $pdo->query("SELECT * FROM sidebar_buttons WHERE status='activ
         }
 
         :root {
-            --primary: #f97316;
-            --secondary: #ea580c;
-            --text: #333;
-            --light: #f5f7fa;
+            --primary: #059669;
+            --secondary: #047857;
+            --accent: #10b981;
+            --light-green: #d1fae5;
+            --lighter-green: #f0fdf4;
+            --text: #1f2937;
+            --text-gray: #6b7280;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --shadow-sm: 0 2px 8px rgba(5, 150, 105, 0.08);
+            --shadow-md: 0 4px 12px rgba(5, 150, 105, 0.12);
+            --shadow-lg: 0 8px 24px rgba(5, 150, 105, 0.15);
         }
-
+    </style>
+    <?php echo get_theme_style_block($pdo); ?>
+    <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--light);
@@ -183,19 +194,23 @@ $sidebarButtons = $pdo->query("SELECT * FROM sidebar_buttons WHERE status='activ
     </nav>
 
     <div class="container">
-        <aside class="sidebar-menu-box">
+        <aside class="sidebar-menu-box" data-aos="fade-right">
             <h3
                 style="font-size: 18px; color: #2c3e50; margin-bottom: 10px; padding-left: 10px; border-left: 4px solid #2c3e50;">
                 เมนู</h3>
             <?php foreach ($sidebarButtons as $btn): ?>
-                <a href="<?php echo htmlspecialchars($btn['link']); ?>" class="sidebar-btn" target="_blank">
+                <?php 
+                // เช็คว่าลิงก์ภายนอกหรือไม่ เพื่อเปิดแท็บใหม่เฉพาะลิงก์ภายนอก
+                $is_external = (strpos($btn['link'], 'http://') === 0 || strpos($btn['link'], 'https://') === 0) && strpos($btn['link'], $_SERVER['HTTP_HOST']) === false;
+                ?>
+                <a href="<?php echo htmlspecialchars($btn['link']); ?>" class="sidebar-btn" <?php echo $is_external ? 'target="_blank"' : ''; ?>>
                     <span><?php echo htmlspecialchars($btn['name']); ?></span>
                     <i class="fas fa-chevron-right"></i>
                 </a>
             <?php endforeach; ?>
         </aside>
 
-        <main class="content-card">
+        <main class="content-card" data-aos="fade-left" data-aos-delay="100">
             <h1><?php echo htmlspecialchars($page['title']); ?></h1>
             <div class="page-body">
                 <?php echo $page['content']; ?>
@@ -206,10 +221,15 @@ $sidebarButtons = $pdo->query("SELECT * FROM sidebar_buttons WHERE status='activ
         </main>
     </div>
 
-    <footer>
-        <p>&copy; 2025 <?php echo htmlspecialchars($orgInfo['name']); ?></p>
     </footer>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+    </script>
 </body>
 
 </html>

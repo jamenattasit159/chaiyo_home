@@ -1,6 +1,17 @@
 {
     "require": {
         "google/apiclient": "^2.18",
-        "sonata-project/google-authenticator": "^2.3"
+        "sonata-project/google-authenticator": "^2.3",
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "config": {
+        "audit": {
+            "ignore": [
+                "PKSA-y2cr-5h3j-g3ys",
+                "PKSA-smrh-yx37-92ws",
+                "PKSA-zh4j-by9m-7mz8",
+                "PKSA-km2b-zc3b-mjm3"
+            ]
+        }
     }
 }

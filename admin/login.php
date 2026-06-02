@@ -18,25 +18,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน';
     } else {
         try {
-            // 1. ดึงข้อมูล User จาก Username
-            $stmt = $pdo->prepare("SELECT * FROM admin_users WHERE username = ? AND status = 'active'");
+            // 1. ดึงข้อมูล User จาก Username (ไม่ต้องเช็ค status ใน query)
+            $stmt = $pdo->prepare("SELECT * FROM admin_users WHERE username = ?");
             $stmt->execute([$username]);
             $user = $stmt->fetch();
 
             // 2. ตรวจสอบรหัสผ่าน
             if ($user && password_verify($password, $user['password'])) {
 
-                // สร้าง Session ชั่วคราว (ยังไม่ถือว่าล็อกอินสมบูรณ์)
-                $_SESSION['temp_admin_id'] = $user['id'];
-
-                if (!empty($user['google_2fa_secret'])) {
-                    // CASE A: เคยตั้งค่าแล้ว -> ไปหน้ากรอกรหัส 6 หลัก
-                    header('Location: verify_2fa.php');
+                // 3. ตรวจสอบสถานะบัญชี
+                if (($user['status'] ?? 'active') !== 'active') {
+                    $error = 'บัญชีของท่านถูกระงับการใช้งาน กรุณาติดต่อผู้ดูแลระบบ';
                 } else {
-                    // CASE B: ยังไม่เคยตั้งค่า -> บังคับไปหน้าสแกน QR Code เดี๋ยวนี้!
-                    header('Location: setup_2fa.php');
+                    // สร้าง Session ชั่วคราว (ยังไม่ถือว่าล็อกอินสมบูรณ์)
+                    $_SESSION['temp_admin_id'] = $user['id'];
+
+                    if (!empty($user['google_2fa_secret'])) {
+                        // CASE A: เคยตั้งค่าแล้ว -> ไปหน้ากรอกรหัส 6 หลัก
+                        header('Location: verify_2fa.php');
+                    } else {
+                        // CASE B: ยังไม่เคยตั้งค่า -> บังคับไปหน้าสแกน QR Code เดี๋ยวนี้!
+                        header('Location: setup_2fa.php');
+                    }
+                    exit;
                 }
-                exit;
 
             } else {
                 $error = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
@@ -49,238 +54,125 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" data-theme="winter">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เข้าสู่ระบบแอดมิน - SSO Angthong</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- โหลดฟอนต์ภาษาไทยและอังกฤษพรีเมียม -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <!-- FontAwesome สำหรับไอคอนสวยๆ -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <style>
-        :root {
-            --primary: #f97316;
-            --primary-dark: #ea580c;
-        }
+    <!-- daisyUI 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.5.20/daisyui.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.5.20/themes.css" rel="stylesheet" type="text/css" />
+    
+    <!-- Tailwind CSS 4 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-        body {
-            font-family: 'Sarabun', sans-serif;
-            /* ภาพพื้นหลังสวยๆ */
-            background-image: url('https://images.unsplash.com/photo-1497294815431-9365093b7331?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        /* Overlay สีส้มจางๆ ทับภาพพื้นหลัง */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(249, 115, 22, 0.85) 0%, rgba(194, 65, 12, 0.9) 100%);
-            z-index: 1;
-        }
-
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            /* เอฟเฟกต์กระจกเบลอ */
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 380px;
-            position: relative;
-            z-index: 2;
-            animation: slideUp 0.5s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h2 {
-            margin: 0;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .header p {
-            margin: 5px 0 0;
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .input-group i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #aaa;
-            transition: 0.3s;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 12px 12px 45px;
-            /* เว้นที่ด้านซ้ายให้ไอคอน */
-            border: 2px solid #eee;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-family: 'Sarabun', sans-serif;
-            font-size: 1rem;
-            transition: 0.3s;
-            background: #f9f9f9;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: #fff;
-        }
-
-        .form-control:focus+i {
-            color: var(--primary);
-            /* เปลี่ยนสีไอคอนเมื่อโฟกัส */
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(to right, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 5px 15px rgba(249, 115, 22, 0.3);
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
-        }
-
-        .btn-login:active {
-            transform: translateY(0);
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            font-size: 0.85rem;
-        }
-
-        .footer-links a {
-            color: #666;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary);
-        }
-
-        .error-msg {
-            background: #fef2f2;
-            border-left: 4px solid #ef4444;
-            color: #b91c1c;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .system-badge {
-            text-align: center;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            color: #888;
-            font-size: 0.8rem;
-        }
+    <style type="text/tailwindcss">
+      @theme {
+        --font-sans: 'Sarabun', 'Outfit', sans-serif;
+      }
     </style>
 </head>
 
-<body>
-    <div class="login-card">
-        <div class="header">
-            <div style="font-size: 3rem; color: var(--primary); margin-bottom: 10px;">
-                <i class="fa-solid fa-shield-halved"></i>
+<body class="bg-gradient-to-tr from-primary/80 to-secondary/90 min-h-screen flex items-center justify-center p-4 font-sans relative overflow-hidden">
+    <!-- หน้าจอโหลดดิ้งพรีเมียม (Page Loading Overlay) -->
+    <div id="page-loader" class="fixed inset-0 z-[9999] bg-base-100 flex flex-col items-center justify-center gap-4 transition-all duration-500 ease-out opacity-100 visible">
+        <div class="flex flex-col items-center gap-3">
+            <span class="loading loading-ring loading-lg text-primary scale-125"></span>
+            <div class="flex items-center gap-2">
+                <span class="text-3xl">🔑</span>
+                <span class="font-black text-xl text-primary tracking-tight">กำลังโหลดระบบ...</span>
             </div>
-            <h2>เข้าสู่ระบบ</h2>
-            <p>Admin Control Panel</p>
-        </div>
-
-        <?php if ($error): ?>
-            <div class="error-msg">
-                <i class="fa-solid fa-circle-exclamation"></i>
-                <span><?php echo $error; ?></span>
-            </div>
-        <?php endif; ?>
-
-        <form method="POST">
-            <div class="input-group">
-                <input type="text" name="username" class="form-control" placeholder="ชื่อผู้ใช้" required autofocus>
-                <i class="fa-solid fa-user"></i>
-            </div>
-
-            <div class="input-group">
-                <input type="password" name="password" class="form-control" placeholder="รหัสผ่าน" required>
-                <i class="fa-solid fa-lock"></i>
-            </div>
-
-            <div class="footer-links">
-                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; color: #666;">
-                    <input type="checkbox"> จำฉันไว้ในระบบ
-                </label>
-                <a href="forgot_password.php">ลืมรหัสผ่าน?</a>
-            </div>
-
-            <div style="margin-top: 25px;">
-                <button type="submit" class="btn-login">
-                    เข้าสู่ระบบ <i class="fa-solid fa-arrow-right" style="margin-left: 5px;"></i>
-                </button>
-            </div>
-        </form>
-
-        <div class="system-badge">
-            <i class="fa-solid fa-building-columns"></i> ระบบความปลอดภัย SSO Angthong
+            <p class="text-xs text-base-content/40 font-bold uppercase tracking-widest">Admin Control Panel</p>
         </div>
     </div>
+
+    <!-- วงกลมตกแต่งฉากหลัง -->
+    <div class="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
+
+    <div class="card w-full max-w-md bg-base-100 shadow-2xl rounded-2xl overflow-hidden border border-base-200 relative z-10 transition-all hover:shadow-primary/10">
+        <div class="card-body p-8 flex flex-col items-center">
+            
+            <!-- Logo / Header -->
+            <div class="flex flex-col items-center gap-2 mb-6">
+                <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary text-4xl mb-2">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2 class="card-title text-2xl font-black text-base-content tracking-tight">เข้าสู่ระบบ</h2>
+                <p class="text-xs text-base-content/40 uppercase tracking-widest font-bold">Admin Control Panel</p>
+            </div>
+            
+            <!-- Error Alert -->
+            <?php if ($error): ?>
+                <div class="alert alert-error gap-2 py-3 px-4 rounded-xl text-sm font-semibold mb-5 text-white shadow-md border-none">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span><?php echo $error; ?></span>
+                </div>
+            <?php endif; ?>
+            
+            <!-- Form -->
+            <form method="POST" class="w-full flex flex-col gap-4">
+                
+                <!-- Username Input -->
+                <div class="form-control w-full">
+                    <label class="label pb-1.5"><span class="label-text font-bold text-xs uppercase text-base-content/60">ชื่อผู้ใช้งาน (Username)</span></label>
+                    <div class="relative w-full">
+                        <input type="text" name="username" class="input input-bordered w-full pl-12 rounded-xl focus:input-primary" placeholder="กรอกชื่อผู้ใช้งาน" required autofocus />
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40"><i class="fa-solid fa-user"></i></span>
+                    </div>
+                </div>
+                
+                <!-- Password Input -->
+                <div class="form-control w-full">
+                    <label class="label pb-1.5"><span class="label-text font-bold text-xs uppercase text-base-content/60">รหัสผ่าน (Password)</span></label>
+                    <div class="relative w-full">
+                        <input type="password" name="password" class="input input-bordered w-full pl-12 rounded-xl focus:input-primary" placeholder="กรอกรหัสผ่าน" required />
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40"><i class="fa-solid fa-lock"></i></span>
+                    </div>
+                </div>
+                
+                <!-- Footer Links -->
+                <div class="flex justify-between items-center text-xs font-semibold text-base-content/60 mt-1">
+                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" class="checkbox checkbox-xs checkbox-primary rounded" />
+                        <span>จำฉันไว้ในระบบ</span>
+                    </label>
+                    <a href="forgot_password.php" class="link link-primary link-hover">ลืมรหัสผ่าน?</a>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary w-full rounded-xl gap-2 font-bold text-base shadow-lg shadow-primary/25">
+                        เข้าสู่ระบบ <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+            
+            <!-- System Badge -->
+            <div class="w-full border-t border-base-200 mt-6 pt-4 text-center text-xs text-base-content/40 font-semibold tracking-wide">
+                <i class="fa-solid fa-building-columns mr-1"></i> ระบบความปลอดภัย SSO Angthong
+            </div>
+        </div>
+    </div>
+    <script>
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.classList.add('opacity-0', 'invisible');
+                setTimeout(() => {
+                    loader.remove();
+                }, 500);
+            }
+        });
+    </script>
 </body>
 
 </html>
