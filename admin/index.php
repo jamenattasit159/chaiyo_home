@@ -36,11 +36,11 @@ $page = $_GET['page'] ?? 'dashboard';
       @theme {
         --font-sans: 'Sarabun', 'Outfit', sans-serif;
         --font-display: 'Outfit', 'Sarabun', sans-serif;
-        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-        --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
       }
+    </style>
+    <style>
       h1, h2, h3, h4, h5, h6, .stat-value, .stat-title, .menu-title, .badge, .font-display {
-        font-family: var(--font-display);
+        font-family: 'Outfit', 'Sarabun', sans-serif;
         font-weight: 800;
         letter-spacing: -0.02em;
       }
@@ -57,12 +57,12 @@ $page = $_GET['page'] ?? 'dashboard';
         }
       }
       .animate-fade-slide-up {
-        animation: fadeSlideUp 500ms var(--ease-out-expo) forwards;
+        animation: fadeSlideUp 500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
 
       /* Sidebar list micro-interaction */
       .menu li a {
-        transition: all 250ms var(--ease-out-quart);
+        transition: all 250ms cubic-bezier(0.25, 1, 0.5, 1);
       }
       .menu li a:hover {
         transform: translateX(6px);
@@ -73,7 +73,7 @@ $page = $_GET['page'] ?? 'dashboard';
 
       /* Global Button Micro-interactions */
       .btn {
-        transition: all 200ms var(--ease-out-quart) !important;
+        transition: all 200ms cubic-bezier(0.25, 1, 0.5, 1) !important;
       }
       .btn:active {
         transform: scale(0.96) !important;
@@ -81,11 +81,11 @@ $page = $_GET['page'] ?? 'dashboard';
 
       /* Global Form Inputs Glow Focus */
       .input, .textarea, .select, .checkbox, .radio {
-        transition: all 200ms var(--ease-out-quart) !important;
+        transition: all 200ms cubic-bezier(0.25, 1, 0.5, 1) !important;
       }
       .input:focus, .textarea:focus, .select:focus {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(var(--color-primary), 0.1) !important;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1) !important;
       }
 
       /* Staggered Cards Entrance */
@@ -101,7 +101,7 @@ $page = $_GET['page'] ?? 'dashboard';
       }
       .stagger-card {
         opacity: 0;
-        animation: cardEntrance 600ms var(--ease-out-expo) forwards;
+        animation: cardEntrance 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
         animation-delay: calc(var(--stagger, 0) * 50ms);
       }
 

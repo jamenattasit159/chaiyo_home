@@ -106,11 +106,11 @@ if ($valid_token && $token_data) {
       @theme {
         --font-sans: 'Sarabun', 'Outfit', sans-serif;
         --font-display: 'Outfit', 'Sarabun', sans-serif;
-        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-        --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
       }
+    </style>
+    <style>
       h1, h2, h3, h4, h5, h6, .stat-value, .stat-title, .menu-title, .badge, .font-display {
-        font-family: var(--font-display);
+        font-family: 'Outfit', 'Sarabun', sans-serif;
         font-weight: 800;
         letter-spacing: -0.02em;
       }
@@ -127,7 +127,7 @@ if ($valid_token && $token_data) {
         }
       }
       .animate-auth-card {
-        animation: authCardEntrance 600ms var(--ease-out-expo) forwards;
+        animation: authCardEntrance 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
 
       @keyframes shake {
@@ -141,16 +141,16 @@ if ($valid_token && $token_data) {
 
       /* Global Input Focus */
       .input {
-        transition: all 200ms var(--ease-out-quart) !important;
+        transition: all 200ms cubic-bezier(0.25, 1, 0.5, 1) !important;
       }
       .input:focus {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(var(--color-primary), 0.1) !important;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1) !important;
       }
 
       /* Global Button */
       .btn {
-        transition: all 200ms var(--ease-out-quart) !important;
+        transition: all 200ms cubic-bezier(0.25, 1, 0.5, 1) !important;
       }
       .btn:active {
         transform: scale(0.96) !important;
