@@ -186,7 +186,6 @@ $users = $pdo->query("SELECT * FROM admin_users ORDER BY created_at DESC")->fetc
                             <th>Email</th>
                             <th>สิทธิ์ (Role)</th>
                             <th>สถานะ (Status)</th>
-                            <th>2FA</th>
                             <th class="text-right">จัดการ</th>
                         </tr>
                     </thead>
@@ -232,17 +231,6 @@ $users = $pdo->query("SELECT * FROM admin_users ORDER BY created_at DESC")->fetc
                                             <?php endif; ?>
                                         </button>
                                     </form>
-                                </td>
-                                <td>
-                                    <?php if (!empty($u['google_2fa_secret'])): ?>
-                                        <span class="badge badge-success badge-outline gap-1 font-semibold text-xs">
-                                            <i class="fas fa-shield-alt"></i> On
-                                        </span>
-                                    <?php else: ?>
-                                        <span class="badge badge-ghost gap-1 opacity-60 font-semibold text-xs">
-                                            <i class="fas fa-times"></i> Off
-                                        </span>
-                                    <?php endif; ?>
                                 </td>
                                 <td class="text-right">
                                     <div class="flex justify-end gap-1.5">

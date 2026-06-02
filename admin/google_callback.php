@@ -45,17 +45,12 @@ if (isset($_GET['code'])) {
                     die("บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ");
                 }
 
-                // สร้าง Session ชั่วคราว (ยังไม่ให้เข้าใช้งานจริง จนกว่าจะผ่าน 2FA)
-                $_SESSION['temp_admin_id'] = $user['id'];
-
-                // ตรวจสอบว่าตั้งค่า 2FA หรือยัง
-                if (!empty($user['google_2fa_secret'])) {
-                    // ถ้ามี Secret แล้ว -> ไปหน้ายืนยัน OTP
-                    header('Location: verify_2fa.php');
-                } else {
-                    // ถ้ายังไม่มี Secret -> ไปหน้าตั้งค่า
-                    header('Location: setup_2fa.php');
-                }
+                // ล็อกอินเข้าสู่ระบบสำเร็จทันที (ข้ามขั้นตอน 2FA)
+                $_SESSION['admin_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'] ?? 'admin';
+                
+                header('Location: index.php');
                 exit;
 
             } else {
@@ -71,11 +66,12 @@ if (isset($_GET['code'])) {
                     if ($insertStmt->execute([$newUsername, $randomPassword, $email])) {
                         $newUserId = $pdo->lastInsertId();
                         
-                        // สมัครเสร็จ -> สร้าง Session ชั่วคราว
-                        $_SESSION['temp_admin_id'] = $newUserId;
+                        // สมัครเสร็จ -> ล็อกอินเข้าสู่ระบบสำเร็จทันที (ข้ามขั้นตอน 2FA)
+                        $_SESSION['admin_id'] = $newUserId;
+                        $_SESSION['username'] = $newUsername;
+                        $_SESSION['role'] = 'admin';
                         
-                        // สมาชิกใหม่ต้องไปตั้งค่า 2FA ก่อนเสมอ
-                        header('Location: setup_2fa.php');
+                        header('Location: index.php');
                         exit;
                     } else {
                         echo "เกิดข้อผิดพลาดในการสร้างบัญชีใหม่";

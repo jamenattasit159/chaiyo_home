@@ -30,16 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (($user['status'] ?? 'active') !== 'active') {
                     $error = 'บัญชีของท่านถูกระงับการใช้งาน กรุณาติดต่อผู้ดูแลระบบ';
                 } else {
-                    // สร้าง Session ชั่วคราว (ยังไม่ถือว่าล็อกอินสมบูรณ์)
-                    $_SESSION['temp_admin_id'] = $user['id'];
-
-                    if (!empty($user['google_2fa_secret'])) {
-                        // CASE A: เคยตั้งค่าแล้ว -> ไปหน้ากรอกรหัส 6 หลัก
-                        header('Location: verify_2fa.php');
-                    } else {
-                        // CASE B: ยังไม่เคยตั้งค่า -> บังคับไปหน้าสแกน QR Code เดี๋ยวนี้!
-                        header('Location: setup_2fa.php');
-                    }
+                    // ล็อกอินเข้าสู่ระบบสำเร็จ (ข้ามขั้นตอน 2FA)
+                    $_SESSION['admin_id'] = $user['id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['role'] = $user['role'] ?? 'admin';
+                    
+                    header('Location: index.php');
                     exit;
                 }
 
