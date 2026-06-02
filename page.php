@@ -40,17 +40,7 @@ if (strpos($logoData, 'uploads/') !== false && file_exists($logoData)) {
     <link rel="stylesheet" href="assets/css/index.css">
     <?php echo get_theme_style_block($pdo); ?>
     <style>
-        /* page.php Layout Styles */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 30px;
-            align-items: start;
-        }
-
+        /* page.php custom content styling */
         .content-card {
             background: white;
             padding: 40px;
@@ -75,61 +65,8 @@ if (strpos($logoData, 'uploads/') !== false && file_exists($logoData)) {
             line-height: 1.8;
         }
 
-        /* Mobile Touch & Clickability Fixes */
-        .sidebar-menu-box {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: auto !important;
-            position: relative !important;
-            z-index: 50 !important;
-        }
-
-        .sidebar-btn {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-            color: var(--text);
-            padding: 15px 20px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            box-shadow: var(--shadow-sm);
-            border-left: 5px solid var(--primary);
-            transition: var(--transition);
-            pointer-events: auto !important;
-            position: relative !important;
-            z-index: 51 !important;
-            cursor: pointer;
-            border-top: 1px solid var(--border);
-            border-right: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .sidebar-btn:hover {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            transform: translateX(5px);
-            border-left-color: white;
-            border-top-color: transparent;
-            border-right-color: transparent;
-            border-bottom-color: transparent;
-        }
-
         @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                margin: 20px auto;
-                gap: 20px;
-            }
-
-            .sidebar-menu-box {
-                order: 2;
-            }
-
             .content-card {
-                order: 1;
                 padding: 24px;
             }
         }
@@ -165,31 +102,35 @@ if (strpos($logoData, 'uploads/') !== false && file_exists($logoData)) {
 
     <!-- Main Container -->
     <div class="container">
-        <aside class="sidebar-menu-box" data-aos="fade-right">
-            <h3 style="font-size: 18px; color: var(--text); margin-bottom: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-                <i class="fas fa-list-ul" style="color: var(--primary);"></i> เมนู
-            </h3>
-            <?php foreach ($sidebarButtons as $btn): ?>
-                <?php 
-                // เช็คว่าลิงก์ภายนอกหรือไม่ เพื่อเปิดแท็บใหม่เฉพาะลิงก์ภายนอก
-                $is_external = (strpos($btn['link'], 'http://') === 0 || strpos($btn['link'], 'https://') === 0) && strpos($btn['link'], $_SERVER['HTTP_HOST']) === false;
-                ?>
-                <a href="<?php echo htmlspecialchars($btn['link']); ?>" class="sidebar-btn" <?php echo $is_external ? 'target="_blank"' : ''; ?>>
-                    <span><?php echo htmlspecialchars($btn['name']); ?></span>
-                    <i class="fas fa-chevron-right"></i>
-                </a>
-            <?php endforeach; ?>
-        </aside>
+        <div class="main-content-wrapper" style="padding: 40px 0;">
+            <aside class="sidebar-left" data-aos="fade-right">
+                <div class="sidebar-menu-box">
+                    <h3 style="font-size: 18px; color: var(--text); margin-bottom: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-list-ul" style="color: var(--primary);"></i> เมนู
+                    </h3>
+                    <?php foreach ($sidebarButtons as $btn): ?>
+                        <?php 
+                        // เช็คว่าลิงก์ภายนอกหรือไม่ เพื่อเปิดแท็บใหม่เฉพาะลิงก์ภายนอก
+                        $is_external = (strpos($btn['link'], 'http://') === 0 || strpos($btn['link'], 'https://') === 0) && strpos($btn['link'], $_SERVER['HTTP_HOST']) === false;
+                        ?>
+                        <a href="<?php echo htmlspecialchars($btn['link']); ?>" class="sidebar-btn" <?php echo $is_external ? 'target="_blank"' : ''; ?>>
+                            <span><?php echo htmlspecialchars($btn['name']); ?></span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </aside>
 
-        <main class="content-card" data-aos="fade-left" data-aos-delay="100">
-            <h1><?php echo htmlspecialchars($page['title']); ?></h1>
-            <div class="page-body">
-                <?php echo $page['content']; ?>
-            </div>
-            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-gray);">
-                แก้ไขล่าสุด: <?php echo date('d/m/Y H:i', strtotime($page['updated_at'])); ?>
-            </div>
-        </main>
+            <main class="content-card" data-aos="fade-left" data-aos-delay="100">
+                <h1><?php echo htmlspecialchars($page['title']); ?></h1>
+                <div class="page-body">
+                    <?php echo $page['content']; ?>
+                </div>
+                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-gray);">
+                    แก้ไขล่าสุด: <?php echo date('d/m/Y H:i', strtotime($page['updated_at'])); ?>
+                </div>
+            </main>
+        </div>
     </div>
 
     <!-- Unified Premium Footer -->

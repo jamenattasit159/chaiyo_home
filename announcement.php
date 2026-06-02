@@ -30,6 +30,12 @@ $orgInfo = $pdo->query("SELECT * FROM organization_info LIMIT 1")->fetch();
 // ดึงไฟล์แนบ (Multiple Attachments)
 $attachments = $pdo->query("SELECT * FROM announcement_attachments WHERE announcement_id = " . (int)$id)->fetchAll(PDO::FETCH_ASSOC);
 
+$logoData = $orgInfo['logo'] ?? '🏥';
+$isLogoFile = false;
+if (strpos($logoData, 'uploads/') !== false && file_exists($logoData)) {
+    $isLogoFile = true;
+}
+
 // ฟังก์ชันสำหรับแปลงชื่อหมวดหมู่เป็นภาษาไทย (เอาไว้ใช้แสดงชื่อหัวข้อ)
 function getCategoryName($category)
 {
@@ -74,114 +80,41 @@ foreach ($categories_config as $cat_key => $cat_name) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($announce['title']); ?></title>
+    <title><?php echo htmlspecialchars($announce['title']); ?> - <?php echo htmlspecialchars($orgInfo['name'] ?? 'ประกาศ'); ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/index.css">
     <?php echo get_theme_style_block($pdo); ?>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #059669;
-            --secondary: #047857;
-            --accent: #10b981;
-            --light-green: #d1fae5;
-            --lighter-green: #f0fdf4;
-            --text: #1f2937;
-            --text-gray: #6b7280;
-            --white: #ffffff;
-            --border: #e5e7eb;
-            --shadow-sm: 0 2px 8px rgba(5, 150, 105, 0.08);
-            --shadow-md: 0 4px 12px rgba(5, 150, 105, 0.12);
-            --shadow-lg: 0 8px 24px rgba(5, 150, 105, 0.15);
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--text);
-            background: var(--light);
-            line-height: 1.6;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 15px 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .navbar-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .navbar h1 {
-            font-size: 22px;
-            margin: 0;
-        }
-
-        .back-link {
-            color: white;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-
-        .back-link:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        /* Main Container */
+        /* announcement.php custom layouts */
         .container {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 40px auto;
             padding: 0 20px;
         }
 
-        /* Content Layout */
         .content-wrapper {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 1fr 340px;
             gap: 30px;
-            padding: 40px 0;
+            align-items: start;
         }
 
-        /* Main Article */
+        /* Article styling */
         .article {
             background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
         }
 
         .article h1 {
-            font-size: 28px;
-            margin-bottom: 15px;
-            color: #2c3e50;
+            font-size: clamp(20px, 3vw, 28px);
+            margin-bottom: 20px;
+            color: var(--text);
             line-height: 1.4;
+            font-weight: 800;
         }
 
         .article-meta {
@@ -189,44 +122,25 @@ foreach ($categories_config as $cat_key => $cat_name) {
             gap: 20px;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid var(--border);
+            border-bottom: 1px solid var(--border);
             flex-wrap: wrap;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .meta-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #666;
+            color: var(--text-gray);
         }
 
         .meta-item i {
             color: var(--primary);
-            font-size: 16px;
-        }
-
-        /* Download Button Style */
-        .download-btn {
-            display: inline-block;
-            background: #2563eb;
-            /* Blue color for download */
-            color: white;
-            padding: 12px 25px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            margin: 25px 0 15px 0;
-            transition: background 0.3s;
-        }
-
-        .download-btn:hover {
-            background: #1d4ed8;
         }
 
         .article-content {
-            color: #555;
-            font-size: 15px;
+            color: var(--text);
+            font-size: 16px;
             line-height: 1.8;
         }
 
@@ -234,59 +148,40 @@ foreach ($categories_config as $cat_key => $cat_name) {
             margin-bottom: 15px;
         }
 
-        .article-content img {
-            max-width: 100%;
-            height: auto;
-            margin: 20px 0;
-            border-radius: 8px;
+        /* Premium Quiet Download Button */
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--lighter-green);
+            color: var(--primary);
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none !important;
+            font-weight: 700;
+            font-size: 14px;
+            margin: 15px 0 25px 0;
+            transition: var(--transition);
+            border: 1px solid var(--light-green);
         }
 
-        /* Sidebar */
+        .download-btn:hover {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 20%, transparent);
+        }
+
+        /* Sidebar & category groups */
         .sidebar {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 30px;
         }
 
-        .sidebar-box {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar-box h3 {
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid var(--primary);
-            color: #2c3e50;
-            font-size: 16px;
-        }
-
-        .contact-info p {
-            margin-bottom: 12px;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .contact-info strong {
-            color: #2c3e50;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .contact-info a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .contact-info a:hover {
-            text-decoration: underline;
-        }
-
-        /* Styles for Grouped Sidebar Items */
         .category-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .category-group:last-child {
@@ -294,21 +189,20 @@ foreach ($categories_config as $cat_key => $cat_name) {
         }
 
         .category-header {
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--secondary);
-            margin-bottom: 10px;
-            border-left: 3px solid var(--secondary);
-            padding-left: 8px;
-            background: #fff3e0;
-            padding: 5px 8px;
-            border-radius: 0 4px 4px 0;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 12px;
+            border-left: 3px solid var(--primary);
+            padding: 6px 10px;
+            background: var(--lighter-green);
+            border-radius: 0 8px 8px 0;
         }
 
         .related-item {
-            padding: 10px 0;
-            border-bottom: 1px dashed var(--border);
-            margin-left: 5px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            margin-left: 4px;
         }
 
         .related-item:last-child {
@@ -316,129 +210,71 @@ foreach ($categories_config as $cat_key => $cat_name) {
         }
 
         .related-link {
-            color: #444;
-            text-decoration: none;
+            color: var(--text);
+            text-decoration: none !important;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             display: block;
-            line-height: 1.4;
-            transition: color 0.3s;
+            line-height: 1.5;
+            transition: var(--transition);
         }
 
         .related-link:hover {
             color: var(--primary);
+            transform: translateX(4px);
         }
 
         .related-date {
-            font-size: 12px;
-            color: #999;
-            margin-top: 4px;
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        /* Footer */
-        footer {
-            background: #2c3e50;
-            color: white;
-            padding: 40px 0 20px;
-            margin-top: 60px;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .footer-section h4 {
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .footer-section p,
-        .footer-section a {
-            font-size: 13px;
-            color: #ecf0f1;
-            line-height: 1.8;
-        }
-
-        .footer-section a {
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-section a:hover {
-            color: var(--primary);
-        }
-
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #bdc3c7;
-            font-size: 13px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .navbar-content {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .navbar h1 {
-                font-size: 18px;
-            }
-
-            .back-link {
-                width: 100%;
-                justify-content: center;
-            }
-
+        @media (max-width: 992px) {
             .content-wrapper {
                 grid-template-columns: 1fr;
-                gap: 20px;
-                padding: 20px 0;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px auto;
             }
 
             .article {
-                padding: 20px;
-            }
-
-            .article h1 {
-                font-size: 22px;
-            }
-
-            .article-meta {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .article-content {
-                font-size: 14px;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 20px;
+                padding: 24px;
             }
         }
     </style>
 </head>
 
 <body>
+    <!-- Unified Glassmorphism Navbar -->
     <nav class="navbar">
-        <div class="navbar-content">
-            <h1>🏥 <?php echo sanitize($orgInfo['name'] ?? 'สถาบัน'); ?></h1>
-            <a href="index.php" class="back-link">
-                <i class="fas fa-arrow-left"></i>
-                <span>กลับหน้าแรก</span>
+        <div class="navbar-container">
+            <a href="index.php" class="navbar-brand">
+                <?php if ($isLogoFile): ?>
+                    <img src="<?php echo $logoData; ?>" alt="Logo" class="navbar-logo-img">
+                <?php else: ?>
+                    <span style="font-size: 28px;"><?php echo $logoData; ?></span>
+                <?php endif; ?>
+                <span><?php echo sanitize($orgInfo['name'] ?? 'สถาบันอุตสาหกรรมสุขภาพ'); ?></span>
             </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.php#home"><i class="fas fa-home"></i> หน้าแรก</a></li>
+                <li><a href="index.php#pr"><i class="fas fa-bullhorn"></i> ประชาสัมพันธ์</a></li>
+                <li><a href="index.php#directors"><i class="fas fa-users"></i> ผู้บริหาร</a></li>
+                <li><a href="index.php#news"><i class="fas fa-newspaper"></i> ประกาศทั่วไป</a></li>
+                <li><a href="admin/login.php"><i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ</a></li>
+            </ul>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </div>
         </div>
     </nav>
 
@@ -482,11 +318,13 @@ foreach ($categories_config as $cat_key => $cat_name) {
                 </div>
 
                 <?php if (!empty($attachments)): ?>
-                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-                        <h3 style="font-size: 18px; margin-bottom: 15px; color: #333;"><i class="fas fa-paperclip"></i> เอกสารแนบ</h3>
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <div style="margin-top: 40px; padding-top: 25px; border-top: 1px solid var(--border);">
+                        <h3 style="font-size: 18px; margin-bottom: 15px; color: var(--text); font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-paperclip" style="color: var(--primary);"></i> เอกสารแนบ
+                        </h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
                             <?php foreach ($attachments as $att): ?>
-                                <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" class="download-btn" style="margin:0; background-color: #f3f4f6; color: #1f2937; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between;">
+                                <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" class="download-btn" style="margin: 0; background-color: var(--lighter-green); color: var(--text); border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; border-radius: 12px; padding: 14px 20px;">
                                     <span><i class="fas fa-file-alt" style="margin-right: 10px; color: var(--primary);"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'ดาวน์โหลดเอกสาร'); ?></span>
                                     <i class="fas fa-download" style="color: var(--text-gray);"></i>
                                 </a>
@@ -502,7 +340,7 @@ foreach ($categories_config as $cat_key => $cat_name) {
                     $file_ext = strtolower(pathinfo($announce['image'], PATHINFO_EXTENSION));
                     if ($file_ext !== 'pdf' && file_exists($filepath)) {
                         echo '<div style="text-align: center; margin-top: 30px;">';
-                        echo '<img src="' . htmlspecialchars($filepath) . '" alt="ภาพประกอบประกาศ">';
+                        echo '<img src="' . htmlspecialchars($filepath) . '" alt="ภาพประกอบประกาศ" style="max-width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">';
                         echo '</div>';
                     }
                 }
@@ -514,18 +352,18 @@ foreach ($categories_config as $cat_key => $cat_name) {
                     <h3><i class="fas fa-phone" style="margin-right: 8px;"></i>ติดต่อเรา</h3>
                     <div class="contact-info">
                         <?php if ($orgInfo && $orgInfo['phone']): ?>
-                            <div>
+                            <div style="margin-bottom: 12px;">
                                 <strong>📞 โทรศัพท์:</strong>
-                                <a href="tel:<?php echo htmlspecialchars($orgInfo['phone']); ?>">
+                                <a href="tel:<?php echo htmlspecialchars($orgInfo['phone']); ?>" style="color: var(--primary); text-decoration: none;">
                                     <?php echo sanitize($orgInfo['phone']); ?>
                                 </a>
                             </div>
                         <?php endif; ?>
 
                         <?php if ($orgInfo && $orgInfo['email']): ?>
-                            <div>
+                            <div style="margin-bottom: 12px;">
                                 <strong>✉️ อีเมล:</strong>
-                                <a href="mailto:<?php echo htmlspecialchars($orgInfo['email']); ?>">
+                                <a href="mailto:<?php echo htmlspecialchars($orgInfo['email']); ?>" style="color: var(--primary); text-decoration: none;">
                                     <?php echo sanitize($orgInfo['email']); ?>
                                 </a>
                             </div>
@@ -534,7 +372,7 @@ foreach ($categories_config as $cat_key => $cat_name) {
                         <?php if ($orgInfo && $orgInfo['address']): ?>
                             <div>
                                 <strong>📍 ที่อยู่:</strong>
-                                <p><?php echo sanitize($orgInfo['address']); ?></p>
+                                <p style="margin-top: 4px; line-height: 1.5;"><?php echo sanitize($orgInfo['address']); ?></p>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -545,7 +383,6 @@ foreach ($categories_config as $cat_key => $cat_name) {
 
                     <?php if (!empty($all_cats_data)): ?>
                         <?php foreach ($all_cats_data as $group): ?>
-
                             <div class="category-group">
                                 <div class="category-header">
                                     <?php echo $group['name']; ?>
@@ -563,17 +400,16 @@ foreach ($categories_config as $cat_key => $cat_name) {
                                     </div>
                                 <?php endforeach; ?>
                             </div>
-
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <p style="color: #999; font-size: 13px;">ยังไม่มีข้อมูลประกาศ</p>
+                        <p style="color: var(--text-gray); font-size: 13px;">ยังไม่มีข้อมูลประกาศ</p>
                     <?php endif; ?>
-
                 </div>
             </aside>
         </div>
     </div>
 
+    <!-- Unified Premium Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-section">
@@ -584,26 +420,53 @@ foreach ($categories_config as $cat_key => $cat_name) {
                 <h3>📞 ติดต่อเรา</h3>
                 <ul>
                     <?php if ($orgInfo && $orgInfo['phone']): ?>
-                        <li><a href="tel:<?php echo htmlspecialchars($orgInfo['phone']); ?>">📱
-                                <?php echo sanitize($orgInfo['phone']); ?></a></li>
+                        <li>
+                            <a href="tel:<?php echo htmlspecialchars($orgInfo['phone']); ?>">
+                                <i class="fas fa-phone" style="margin-right: 8px;"></i>
+                                <?php echo sanitize($orgInfo['phone']); ?>
+                            </a>
+                        </li>
                     <?php endif; ?>
+
                     <?php if ($orgInfo && $orgInfo['email']): ?>
-                        <li><a href="mailto:<?php echo htmlspecialchars($orgInfo['email']); ?>">✉️
-                                <?php echo sanitize($orgInfo['email']); ?></a></li>
+                        <li>
+                            <a href="mailto:<?php echo htmlspecialchars($orgInfo['email']); ?>">
+                                <i class="fas fa-envelope" style="margin-right: 8px;"></i>
+                                <?php echo sanitize($orgInfo['email']); ?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php if ($orgInfo && $orgInfo['address']): ?>
+                        <li>
+                            <a href="https://maps.google.com/?q=<?php echo urlencode($orgInfo['address']); ?>" target="_blank">
+                                <i class="fas fa-location-dot" style="margin-right: 8px;"></i>
+                                <?php echo sanitize($orgInfo['address']); ?>
+                            </a>
+                        </li>
                     <?php endif; ?>
                 </ul>
             </div>
             <div class="footer-section">
                 <h3>เมนูด่วน</h3>
                 <ul>
-                    <li><a href="#home">หน้าแรก</a></li>
-                    <li><a href="#pr">ประชาสัมพันธ์</a></li>
-                    <li><a href="#news">ประกาศ</a></li>
+                    <li><a href="index.php#home">หน้าแรก</a></li>
+                    <li><a href="index.php#pr">ประชาสัมพันธ์</a></li>
+                    <li><a href="index.php#news">ประกาศ</a></li>
                     <li><a href="admin/login.php">สำหรับเจ้าหน้าที่</a></li>
                 </ul>
             </div>
         </div>
-     
+        <div class="footer-bottom">
+            <p>&copy; 2025
+                <?php if ($isLogoFile): ?>
+                    <img src="<?php echo $logoData; ?>" alt="Logo" style="height: 30px; width: auto; vertical-align: middle; margin-right: 5px; border-radius: 4px;">
+                <?php else: ?>
+                    <span style="margin-right: 5px;"><?php echo $logoData; ?></span>
+                <?php endif; ?>
+                <?php echo sanitize($orgInfo['name'] ?? 'สถาบันอุตสาหกรรมสุขภาพ'); ?>. All rights reserved.
+            </p>
+        </div>
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -611,6 +474,16 @@ foreach ($categories_config as $cat_key => $cat_name) {
         AOS.init({
             duration: 800,
             once: true
+        });
+
+        function toggleMenu() {
+            const menu = document.querySelector('.nav-menu');
+            menu.classList.toggle('active');
+        }
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.nav-menu').classList.remove('active');
+            });
         });
     </script>
 </body>
