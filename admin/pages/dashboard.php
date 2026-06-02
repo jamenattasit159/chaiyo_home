@@ -117,20 +117,54 @@ try {
     </div>
 </div>
 
-<!-- การกระทำด่วน (Quick Actions) ดีไซน์พรีเมียม -->
-<div class="card shadow-xl mb-8 border-none overflow-hidden relative stagger-card quick-links-card" style="--stagger: 5;">
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent)] pointer-events-none"></div>
-    <div class="card-body p-8 relative z-10">
-        <h2 class="card-title text-2xl font-black flex items-center gap-2 tracking-tight">
-            <i class="fa-solid fa-bolt-lightning text-white"></i> 
-            ทางลัดการจัดการข้อมูล (Quick Actions)
-        </h2>
-        <p class="text-white/80 text-sm max-w-[65ch] leading-relaxed">เข้าถึงส่วนการบริหารจัดการข้อมูลหลักของระบบได้อย่างสะดวกรวดเร็วในคลิกเดียว</p>
-        <div class="card-actions justify-start gap-3 mt-6">
-            <a href="?page=banners" class="btn bg-white/20 hover:bg-white/30 text-white border-none rounded-xl gap-2 font-bold transition-all duration-200"><i class="fa-solid fa-images"></i> จัดการแบนเนอร์</a>
-            <a href="?page=directors" class="btn bg-white/20 hover:bg-white/30 text-white border-none rounded-xl gap-2 font-bold transition-all duration-200"><i class="fa-solid fa-user-tie"></i> ข้อมูลผู้บริหาร</a>
-            <a href="?page=announcements" class="btn bg-white/20 hover:bg-white/30 text-white border-none rounded-xl gap-2 font-bold transition-all duration-200"><i class="fa-solid fa-bullhorn"></i> ข่าวประกาศ & ไฟล์แนบ</a>
-        </div>
+<!-- เมนูดำเนินการด่วน (Quick Actions) -->
+<div class="mb-8 stagger-card" style="--stagger: 5;">
+    <div class="flex items-center gap-2 mb-4">
+        <div class="w-1.5 h-4 bg-primary rounded-full animate-pulse"></div>
+        <h2 class="text-lg font-bold text-base-content tracking-tight">ดำเนินการด่วน (Quick Actions)</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Action 1 -->
+        <a href="?page=banners" class="flex items-center justify-between p-4 bg-base-100 border border-base-200/70 hover:border-primary/40 hover:shadow-md rounded-xl transition-all duration-300 group">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary transition-transform duration-300 group-hover:scale-110">
+                    <i class="fa-solid fa-images text-base"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm text-base-content/95 group-hover:text-primary transition-colors">อัปเดตภาพสไลด์แบนเนอร์</h3>
+                    <p class="text-[11px] text-base-content/50">อัปโหลดภาพกิจกรรมหน้าแรก</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-xs text-base-content/30 group-hover:translate-x-1 group-hover:text-primary transition-all"></i>
+        </a>
+        
+        <!-- Action 2 -->
+        <a href="?page=directors" class="flex items-center justify-between p-4 bg-base-100 border border-base-200/70 hover:border-secondary/40 hover:shadow-md rounded-xl transition-all duration-300 group">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary transition-transform duration-300 group-hover:scale-110">
+                    <i class="fa-solid fa-user-tie text-base"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm text-base-content/95 group-hover:text-secondary transition-colors">จัดการทำเนียบผู้บริหาร</h3>
+                    <p class="text-[11px] text-base-content/50">เพิ่ม แก้ไขโครงสร้างบุคลากร</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-xs text-base-content/30 group-hover:translate-x-1 group-hover:text-secondary transition-all"></i>
+        </a>
+        
+        <!-- Action 3 -->
+        <a href="?page=announcements" class="flex items-center justify-between p-4 bg-base-100 border border-base-200/70 hover:border-accent/40 hover:shadow-md rounded-xl transition-all duration-300 group">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent transition-transform duration-300 group-hover:scale-110">
+                    <i class="fa-solid fa-bullhorn text-base"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm text-base-content/95 group-hover:text-accent transition-colors">เขียนประกาศ & อัปเดตไฟล์</h3>
+                    <p class="text-[11px] text-base-content/50">จัดซื้อจัดจ้าง ข่าวประกาศทางการ</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-xs text-base-content/30 group-hover:translate-x-1 group-hover:text-accent transition-all"></i>
+        </a>
     </div>
 </div>
 

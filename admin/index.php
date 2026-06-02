@@ -81,27 +81,7 @@ $page = $_GET['page'] ?? 'dashboard';
         font-weight: 700 !important;
       }
       
-      /* STUNNING GRADIENT QUICK LINKS CARD WITH GLOW */
-      .quick-links-card {
-        background: linear-gradient(135deg, #2563eb 0%, #db2777 100%) !important;
-        color: white !important;
-        border: none !important;
-        box-shadow: 0 12px 30px -10px rgba(37, 99, 235, 0.3) !important;
-      }
-      .quick-links-card h2, .quick-links-card p {
-        color: white !important;
-      }
-      .quick-links-card .btn {
-        background: rgba(255, 255, 255, 0.15) !important;
-        color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.25) !important;
-        backdrop-filter: blur(4px) !important;
-      }
-      .quick-links-card .btn:hover {
-        background: rgba(255, 255, 255, 0.25) !important;
-        transform: translateY(-2px) !important;
-        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1) !important;
-      }
+
 
       /* Global Easing & Animations */
       @keyframes fadeSlideUp {
@@ -165,7 +145,7 @@ $page = $_GET['page'] ?? 'dashboard';
         animation-delay: calc(var(--stagger, 0) * 50ms);
         transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1) !important;
       }
-      .stagger-card:hover:not(.quick-links-card) {
+      .stagger-card:hover {
         transform: translateY(-5px) !important;
         box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.08) !important;
         border-color: rgba(37, 99, 235, 0.2) !important;
