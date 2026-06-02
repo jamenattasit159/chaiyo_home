@@ -38,6 +38,133 @@ try {
     </div>
 </div>
 
+<?php
+$isFirstRun = ($bannerCount == 0 || $directorCount == 0 || $announcementCount == 0 || $fileCount == 0);
+$completedStepsCount = ($bannerCount > 0 ? 1 : 0) + ($directorCount > 0 ? 1 : 0) + ($announcementCount > 0 ? 1 : 0) + ($fileCount > 0 ? 1 : 0);
+$progressPercent = ($completedStepsCount / 4) * 100;
+?>
+
+<?php if ($isFirstRun): ?>
+<!-- คู่มือเริ่มใช้งานอัจฉริยะ (Smart Onboarding Guide) -->
+<div class="card bg-base-100 border border-base-200 shadow-md mb-8 overflow-hidden stagger-card" style="--stagger: 0.5;">
+    <div class="p-6 md:p-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
+            <div>
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold tracking-wider bg-primary/10 text-primary uppercase border border-primary/20">Setup Guide</span>
+                <h2 class="text-xl font-black text-base-content mt-2 tracking-tight">คู่มือการเริ่มต้นใช้งานเว็บไซต์ (Getting Started)</h2>
+                <p class="text-xs text-base-content/60 mt-1 max-w-[65ch]">ยินดีต้อนรับเข้าสู่ระบบของคุณ! ตั้งค่าระบบพื้นฐานให้สมบูรณ์เพื่อให้เว็บไซต์ภายนอกแสดงผลได้อย่างสวยงามและพร้อมใช้งานสำหรับประชาชน</p>
+            </div>
+            
+            <!-- Progress Tracker -->
+            <div class="flex items-center gap-4 bg-base-200/50 py-2.5 px-4 rounded-xl border border-base-200/60">
+                <div class="flex flex-col items-end">
+                    <span class="text-[10px] font-black text-base-content/40 uppercase tracking-wider">ความสมบูรณ์ของระบบ</span>
+                    <span class="text-base font-black text-primary tabular-nums mt-0.5"><?php echo $completedStepsCount; ?> / 4 ขั้นตอนสำเร็จ</span>
+                </div>
+                <div class="radial-progress text-primary" style="--value:<?php echo $progressPercent; ?>; --size:2.8rem; --thickness: 4px;" role="progressbar">
+                    <span class="text-[10px] font-black text-base-content"><?php echo round($progressPercent); ?>%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onboarding Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Step 1: Banner Slider -->
+            <div class="flex flex-col justify-between p-4 rounded-xl border <?php echo $bannerCount > 0 ? 'bg-success/5 border-success/20' : 'bg-base-200/25 border-base-200/80'; ?> transition-all duration-300">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="w-7 h-7 rounded-lg <?php echo $bannerCount > 0 ? 'bg-success/20 text-success' : 'bg-base-300/60 text-base-content/40'; ?> flex items-center justify-center text-xs font-black">1</span>
+                        <?php if ($bannerCount > 0): ?>
+                            <span class="px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider bg-success text-white">เสร็จสิ้น</span>
+                        <?php else: ?>
+                            <span class="px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider bg-base-300 text-base-content/50">ยังไม่ตั้งค่า</span>
+                        <?php endif; ?>
+                    </div>
+                    <h3 class="font-bold text-sm text-base-content">ภาพสไลด์แบนเนอร์</h3>
+                    <p class="text-[11px] text-base-content/50 mt-1">อัปโหลดภาพกิจกรรมหรือแบนเนอร์ประชาสัมพันธ์หน้าแรกของหน่วยงาน</p>
+                </div>
+                <?php if ($bannerCount == 0): ?>
+                    <a href="?page=banners" class="btn btn-sm btn-primary rounded-lg text-xs font-bold mt-4 w-full gap-1">อัปโหลดภาพแรก <i class="fa-solid fa-plus text-[10px]"></i></a>
+                <?php else: ?>
+                    <div class="text-[11px] text-success font-semibold flex items-center gap-1 mt-4">
+                        <i class="fa-solid fa-circle-check text-xs"></i> อัปโหลดแล้ว (<?php echo $bannerCount; ?> ภาพ)
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Step 2: Directors -->
+            <div class="flex flex-col justify-between p-4 rounded-xl border <?php echo $directorCount > 0 ? 'bg-success/5 border-success/20' : 'bg-base-200/25 border-base-200/80'; ?> transition-all duration-300">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="w-7 h-7 rounded-lg <?php echo $directorCount > 0 ? 'bg-success/20 text-success' : 'bg-base-300/60 text-base-content/40'; ?> flex items-center justify-center text-xs font-black">2</span>
+                        <?php if ($directorCount > 0): ?>
+                            <span class="px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider bg-success text-white">เสร็จสิ้น</span>
+                        <?php else: ?>
+                            <span class="px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider bg-base-300 text-base-content/50">ยังไม่ตั้งค่า</span>
+                        <?php endif; ?>
+                    </div>
+                    <h3 class="font-bold text-sm text-base-content">ทำเนียบผู้บริหาร</h3>
+                    <p class="text-[11px] text-base-content/50 mt-1">อัปเดตข้อมูลโครงสร้างหน่วยงานและเพิ่มรายชื่อคณะผู้บริหารให้ครบถ้วน</p>
+                </div>
+                <?php if ($directorCount == 0): ?>
+                    <a href="?page=directors" class="btn btn-sm btn-secondary rounded-lg text-xs font-bold mt-4 w-full gap-1">เพิ่มผู้บริหาร <i class="fa-solid fa-plus text-[10px]"></i></a>
+                <?php else: ?>
+                    <div class="text-[11px] text-success font-semibold flex items-center gap-1 mt-4">
+                        <i class="fa-solid fa-circle-check text-xs"></i> เพิ่มแล้ว (<?php echo $directorCount; ?> ท่าน)
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Step 3: Announcements -->
+            <div class="flex flex-col justify-between p-4 rounded-xl border <?php echo $announcementCount > 0 ? 'bg-success/5 border-success/20' : 'bg-base-200/25 border-base-200/80'; ?> transition-all duration-300">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="w-7 h-7 rounded-lg <?php echo $announcementCount > 0 ? 'bg-success/20 text-success' : 'bg-base-300/60 text-base-content/40'; ?> flex items-center justify-center text-xs font-black">3</span>
+                        <?php if ($announcementCount > 0): ?>
+                            <span class="px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider bg-success text-white">เสร็จสิ้น</span>
+                        <?php else: ?>
+                            <span class="px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider bg-base-300 text-base-content/50">ยังไม่ตั้งค่า</span>
+                        <?php endif; ?>
+                    </div>
+                    <h3 class="font-bold text-sm text-base-content">ข่าวประชาสัมพันธ์</h3>
+                    <p class="text-[11px] text-base-content/50 mt-1">ลงประกาศข่าวประชาสัมพันธ์แรก ข่าวจัดซื้อจัดจ้าง หรือกิจกรรมทางการ</p>
+                </div>
+                <?php if ($announcementCount == 0): ?>
+                    <a href="?page=announcements" class="btn btn-sm btn-accent rounded-lg text-xs font-bold mt-4 w-full gap-1">เขียนข่าวแรก <i class="fa-solid fa-plus text-[10px]"></i></a>
+                <?php else: ?>
+                    <div class="text-[11px] text-success font-semibold flex items-center gap-1 mt-4">
+                        <i class="fa-solid fa-circle-check text-xs"></i> ลงข่าวแล้ว (<?php echo $announcementCount; ?> ประกาศ)
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Step 4: Files -->
+            <div class="flex flex-col justify-between p-4 rounded-xl border <?php echo $fileCount > 0 ? 'bg-success/5 border-success/20' : 'bg-base-200/25 border-base-200/80'; ?> transition-all duration-300">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="w-7 h-7 rounded-lg <?php echo $fileCount > 0 ? 'bg-success/20 text-success' : 'bg-base-300/60 text-base-content/40'; ?> flex items-center justify-center text-xs font-black">4</span>
+                        <?php if ($fileCount > 0): ?>
+                            <span class="px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider bg-success text-white">เสร็จสิ้น</span>
+                        <?php else: ?>
+                            <span class="px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider bg-base-300 text-base-content/50">ยังไม่ตั้งค่า</span>
+                        <?php endif; ?>
+                    </div>
+                    <h3 class="font-bold text-sm text-base-content">อัปโหลดไฟล์เข้าระบบ</h3>
+                    <p class="text-[11px] text-base-content/50 mt-1">อัปโหลดไฟล์เอกสารราชการ พรบ. ข้อมูลสถิติ หรือคู่มือสำหรับประชาสัมพันธ์</p>
+                </div>
+                <?php if ($fileCount == 0): ?>
+                    <a href="?page=announcements" class="btn btn-sm btn-info rounded-lg text-xs font-bold mt-4 w-full gap-1">อัปโหลดไฟล์แรก <i class="fa-solid fa-plus text-[10px]"></i></a>
+                <?php else: ?>
+                    <div class="text-[11px] text-success font-semibold flex items-center gap-1 mt-4">
+                        <i class="fa-solid fa-circle-check text-xs"></i> อัปโหลดแล้ว (<?php echo $fileCount; ?> ไฟล์)
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <!-- สถิติแบบพรีเมียม -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 w-full">
     <!-- Metric 1: Banners -->
