@@ -86,7 +86,7 @@ try {
 </div>
 
 <!-- การกระทำด่วน (Quick Actions) ดีไซน์พรีเมียม -->
-<div class="card bg-gradient-to-r from-primary to-secondary text-primary-content shadow-xl mb-8 border-none overflow-hidden relative stagger-card" style="--stagger: 5;">
+<div class="card shadow-xl mb-8 border-none overflow-hidden relative stagger-card quick-links-card" style="--stagger: 5;">
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent)] pointer-events-none"></div>
     <div class="card-body p-8 relative z-10">
         <h2 class="card-title text-2xl font-black flex items-center gap-2 tracking-tight"><i class="fa-solid fa-bolt text-warning animate-bounce"></i> ทางลัดการจัดการข้อมูล (Quick Links)</h2>

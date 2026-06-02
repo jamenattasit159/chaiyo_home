@@ -39,12 +39,70 @@ $page = $_GET['page'] ?? 'dashboard';
       }
     </style>
     <style>
+      /* FOOLPROOF TYPOGRAPHY - FORCES SARABUN AND OUTFIT TO LOAD NATIVELY */
+      body, .font-sans {
+        font-family: 'Sarabun', 'Outfit', sans-serif !important;
+      }
       h1, h2, h3, h4, h5, h6, .stat-value, .stat-title, .menu-title, .badge, .font-display {
-        font-family: 'Outfit', 'Sarabun', sans-serif;
-        font-weight: 800;
-        letter-spacing: -0.02em;
+        font-family: 'Outfit', 'Sarabun', sans-serif !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.02em !important;
+      }
+
+      /* LUXURIOUS AMBIENT BACKGROUND */
+      body.bg-base-200 {
+        background: radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.04) 0%, transparent 40%), 
+                    radial-gradient(circle at 20% 80%, rgba(219, 39, 119, 0.03) 0%, transparent 40%),
+                    #f8fafc !important;
       }
       
+      /* ULTRA-MODERN GLASS SIDEBAR */
+      .drawer-side .menu {
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-right: 1px solid rgba(226, 232, 240, 0.8) !important;
+      }
+
+      /* PREMIUM ACTIVE MENU ITEM WITH GRADIENT AND GLOW */
+      .menu li a.active {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        color: white !important;
+        box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.4) !important;
+        font-weight: 700 !important;
+      }
+
+      /* MODERN ELEGANT GLOW CLOCK BADGE */
+      .badge-neutral {
+        background: rgba(15, 23, 42, 0.06) !important;
+        color: #0f172a !important;
+        border: 1px solid rgba(15, 23, 42, 0.08) !important;
+        backdrop-filter: blur(8px) !important;
+        font-weight: 700 !important;
+      }
+      
+      /* STUNNING GRADIENT QUICK LINKS CARD WITH GLOW */
+      .quick-links-card {
+        background: linear-gradient(135deg, #2563eb 0%, #db2777 100%) !important;
+        color: white !important;
+        border: none !important;
+        box-shadow: 0 12px 30px -10px rgba(37, 99, 235, 0.3) !important;
+      }
+      .quick-links-card h2, .quick-links-card p {
+        color: white !important;
+      }
+      .quick-links-card .btn {
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        backdrop-filter: blur(4px) !important;
+      }
+      .quick-links-card .btn:hover {
+        background: rgba(255, 255, 255, 0.25) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1) !important;
+      }
+
       /* Global Easing & Animations */
       @keyframes fadeSlideUp {
         from {
@@ -64,11 +122,13 @@ $page = $_GET['page'] ?? 'dashboard';
       .menu li a {
         transition: all 250ms cubic-bezier(0.25, 1, 0.5, 1);
       }
-      .menu li a:hover {
+      .menu li a:hover:not(.active) {
         transform: translateX(6px);
+        background: rgba(37, 99, 235, 0.05) !important;
+        color: #2563eb !important;
       }
       .menu li a:active {
-        transform: scale(0.97) translateX(6px);
+        transform: scale(0.97);
       }
 
       /* Global Button Micro-interactions */
@@ -85,10 +145,10 @@ $page = $_GET['page'] ?? 'dashboard';
       }
       .input:focus, .textarea:focus, .select:focus {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1) !important;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15) !important;
       }
 
-      /* Staggered Cards Entrance */
+      /* Staggered Cards Entrance & Micro-hover scale */
       @keyframes cardEntrance {
         from {
           opacity: 0;
@@ -103,6 +163,12 @@ $page = $_GET['page'] ?? 'dashboard';
         opacity: 0;
         animation: cardEntrance 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
         animation-delay: calc(var(--stagger, 0) * 50ms);
+        transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+      }
+      .stagger-card:hover:not(.quick-links-card) {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.08) !important;
+        border-color: rgba(37, 99, 235, 0.2) !important;
       }
 
       /* Prefers Reduced Motion Compatibility */
