@@ -264,250 +264,249 @@ if (strpos($logoData, 'uploads/') !== false && file_exists($logoData)) {
 
             </aside>
 
-            <!-- Main Content Area: Announcements (Primary Focus above the fold) -->
-            <main class="main-right" id="news" data-aos="fade-left" data-aos-delay="200">
+            <!-- Main Content Area: PR Activity Gallery (Top Right column next to Sidebar) -->
+            <main class="main-right" id="pr" data-aos="fade-left" data-aos-delay="200">
                 <div class="section-header" style="margin-bottom: 24px;">
-                    <span><i class="fas fa-newspaper text-primary"></i> ศูนย์ข่าวสารและบริการ</span>
+                    <span>📸 ข่าวสารกิจกรรมประชาสัมพันธ์</span>
                 </div>
 
-                <div class="tabs-wrapper" style="margin-bottom: 25px;">
-                    <button class="tab-btn active" onclick="openTab(event, 'tab-general')">
-                        <i class="fas fa-bullhorn"></i> ประกาศทั่วไป
-                    </button>
-                    <button class="tab-btn" onclick="openTab(event, 'tab-download')">
-                        <i class="fas fa-download"></i> ดาวน์โหลด
-                    </button>
-                    <button class="tab-btn" onclick="openTab(event, 'tab-procurement')">
-                        <i class="fas fa-shopping-cart"></i> จัดซื้อ-จัดจ้าง
-                    </button>
-                    <button class="tab-btn" onclick="openTab(event, 'tab-ita')">
-                        <i class="fas fa-balance-scale"></i> ประกาศ ITA
-                    </button>
-                </div>
-
-                <!-- Tab: General Announcements -->
-                <div id="tab-general" class="tab-content active">
-                    <div class="list-container">
-                        <?php if (!empty($generals)): ?>
-                            <?php foreach ($generals as $item): ?>
-                                <div class="list-item">
-                                    <div class="list-date">
-                                        <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
-                                        <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
-                                    </div>
-                                    <div class="list-info">
-                                        <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
-                                            <?php echo htmlspecialchars($item['title']); ?>
-                                        </a>
-                                        <div style="font-size:14px; color:#555; margin-top:5px; margin-bottom:8px;">
-                                            <?php echo getContentExcerpt($item['content'], 90); ?>
-                                        </div>
-
-                                        <div class="list-meta">
-                                            <i class="far fa-clock"></i>
-                                            <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
-                                        </div>
-
-                                        <?php 
-                                        $atts = getAnnouncementAttachments($pdo, $item['id']);
-                                        if (!empty($atts)): 
-                                        ?>
-                                            <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
-                                                <?php foreach ($atts as $att): ?>
-                                                    <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
-                                                        <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
-                                                    </a>
-                                                <?php endforeach; ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
-                                        อ่านต่อ <i class="fas fa-arrow-right"></i>
-                                    </a>
+                <div class="pr-list-large">
+                    <?php if (!empty($pr_images)): ?>
+                        <?php foreach ($pr_images as $img): ?>
+                            <a href="uploads/files/<?php echo htmlspecialchars($img['filepath']); ?>" target="_blank"
+                                class="pr-card-large">
+                                <div class="pr-date-badge">
+                                    <?php echo date('Y', strtotime($img['created_at'])); ?>
                                 </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="empty-state">ยังไม่มีข้อมูลในหมวดนี้</div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <!-- Tab: Downloads -->
-                <div id="tab-download" class="tab-content">
-                    <div class="list-container">
-                        <?php if (!empty($downloads)): ?>
-                            <?php foreach ($downloads as $item): ?>
-                                <div class="list-item">
-                                    <div class="list-date">
-                                        <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
-                                        <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
-                                    </div>
-                                    <div class="list-info">
-                                        <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
-                                            <?php echo htmlspecialchars($item['title']); ?>
-                                        </a>
-                                        <div style="font-size:14px; color:#555; margin-top:5px; margin-bottom:8px;">
-                                            <?php echo getContentExcerpt($item['content'], 90); ?>
-                                        </div>
-
-                                        <div class="list-meta">
-                                            <i class="far fa-clock"></i>
-                                            <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
-                                        </div>
-
-                                        <?php 
-                                        $atts = getAnnouncementAttachments($pdo, $item['id']);
-                                        if (!empty($atts)): 
-                                        ?>
-                                            <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
-                                                <?php foreach ($atts as $att): ?>
-                                                    <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
-                                                        <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
-                                                    </a>
-                                                <?php endforeach; ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
-                                        อ่านต่อ <i class="fas fa-arrow-right"></i>
-                                    </a>
+                                <div class="pr-image-wrapper-large">
+                                    <img src="uploads/files/<?php echo htmlspecialchars($img['filepath']); ?>"
+                                        alt="<?php echo htmlspecialchars($img['filename']); ?>">
                                 </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="empty-state">ยังไม่มีข้อมูลในหมวดนี้</div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <!-- Tab: Procurements -->
-                <div id="tab-procurement" class="tab-content">
-                    <div class="list-container">
-                        <?php if (!empty($procurements)): ?>
-                            <?php foreach ($procurements as $item): ?>
-                                <div class="list-item">
-                                    <div class="list-date">
-                                        <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
-                                        <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
+                                <div class="pr-content-large">
+                                    <div class="pr-title-large"><?php echo htmlspecialchars($img['filename']); ?></div>
+                                    <div style="font-size: 13px; color: #888;">
+                                        <i class="far fa-calendar-alt"></i> โพสต์เมื่อ:
+                                        <?php echo date('d/m/Y', strtotime($img['created_at'])); ?>
                                     </div>
-                                    <div class="list-info">
-                                        <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
-                                            <?php echo htmlspecialchars($item['title']); ?>
-                                        </a>
-                                        <div style="font-size:14px; color:#555; margin-top:5px; margin-bottom:8px;">
-                                            <?php echo getContentExcerpt($item['content'], 90); ?>
-                                        </div>
-
-                                        <div class="list-meta">
-                                            <i class="far fa-clock"></i>
-                                            <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
-                                        </div>
-
-                                        <?php 
-                                        $atts = getAnnouncementAttachments($pdo, $item['id']);
-                                        if (!empty($atts)): 
-                                        ?>
-                                            <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
-                                                <?php foreach ($atts as $att): ?>
-                                                    <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
-                                                        <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
-                                                    </a>
-                                                <?php endforeach; ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
-                                        อ่านต่อ <i class="fas fa-arrow-right"></i>
-                                    </a>
                                 </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="empty-state">ยังไม่มีข้อมูลประกาศจัดซื้อจัดจ้าง</div>
-                        <?php endif; ?>
-                    </div>
+                            </a>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div
+                            style="text-align: center; padding: 60px; border: 2px dashed #eee; background: white; border-radius: 8px; grid-column: 1 / -1;">
+                            <i class="fas fa-images" style="font-size: 50px; color: #ddd;"></i>
+                            <p style="color: #999; margin-top: 15px; font-size: 16px;">ยังไม่มีภาพกิจกรรมประชาสัมพันธ์</p>
+                        </div>
+                    <?php endif; ?>
                 </div>
-
-                <!-- Tab: ITA -->
-                <div id="tab-ita" class="tab-content">
-                    <div class="list-container">
-                        <?php if (!empty($itas)): ?>
-                            <?php foreach ($itas as $item): ?>
-                                <div class="list-item">
-                                    <div class="list-date">
-                                        <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
-                                        <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
-                                    </div>
-                                    <div class="list-info">
-                                        <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
-                                            <?php echo htmlspecialchars($item['title']); ?>
-                                        </a>
-                                        <div class="list-meta">
-                                            <i class="far fa-clock"></i>
-                                            <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
-                                        </div>
-
-                                        <?php 
-                                        $atts = getAnnouncementAttachments($pdo, $item['id']);
-                                        if (!empty($atts)): 
-                                        ?>
-                                            <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
-                                                <?php foreach ($atts as $att): ?>
-                                                    <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
-                                                        <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
-                                                    </a>
-                                                <?php endforeach; ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
-                                        อ่านต่อ <i class="fas fa-arrow-right"></i>
-                                    </a>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="empty-state">ยังไม่มีข้อมูลประกาศ ITA</div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
             </main>
         </div>
     </div>
 
-    <!-- PR Section: Widescreen Horizontal Grid Gallery (Below Main Grid) -->
-    <section class="pr-section" id="pr" style="padding: 60px 0; background: var(--white); border-top: 1px solid var(--border);">
+    <!-- Announcements Section: Center Full-Width (Below Main Grid) -->
+    <section class="announcements-section" id="news" style="padding: 60px 0; background: var(--white); border-top: 1px solid var(--border);">
         <div class="container">
             <div class="section-header" style="border-left: 6px solid var(--primary); padding-left: 20px; background: transparent; box-shadow: none; margin-bottom: 30px;">
-                <span>📸 ข่าวสารกิจกรรมประชาสัมพันธ์</span>
+                <span><i class="fas fa-newspaper text-primary"></i> ศูนย์ข่าวสารและบริการ</span>
             </div>
 
-            <div class="pr-list-large" data-aos="fade-up" data-aos-delay="200">
-                <?php if (!empty($pr_images)): ?>
-                    <?php foreach ($pr_images as $img): ?>
-                        <a href="uploads/files/<?php echo htmlspecialchars($img['filepath']); ?>" target="_blank"
-                            class="pr-card-large">
-                            <div class="pr-date-badge">
-                                <?php echo date('Y', strtotime($img['created_at'])); ?>
-                            </div>
-                            <div class="pr-image-wrapper-large">
-                                <img src="uploads/files/<?php echo htmlspecialchars($img['filepath']); ?>"
-                                    alt="<?php echo htmlspecialchars($img['filename']); ?>">
-                            </div>
-                            <div class="pr-content-large">
-                                <div class="pr-title-large"><?php echo htmlspecialchars($img['filename']); ?></div>
-                                <div style="font-size: 13px; color: #888;">
-                                    <i class="far fa-calendar-alt"></i> โพสต์เมื่อ:
-                                    <?php echo date('d/m/Y', strtotime($img['created_at'])); ?>
+            <div class="tabs-wrapper" style="margin-bottom: 25px;" data-aos="fade-up" data-aos-delay="100">
+                <button class="tab-btn active" onclick="openTab(event, 'tab-general')">
+                    <i class="fas fa-bullhorn"></i> ประกาศทั่วไป
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-download')">
+                    <i class="fas fa-download"></i> ดาวน์โหลด
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-procurement')">
+                    <i class="fas fa-shopping-cart"></i> จัดซื้อ-จัดจ้าง
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-ita')">
+                    <i class="fas fa-balance-scale"></i> ประกาศ ITA
+                </button>
+            </div>
+
+            <!-- Tab: General Announcements -->
+            <div id="tab-general" class="tab-content active" data-aos="fade-up" data-aos-delay="200">
+                <div class="list-container">
+                    <?php if (!empty($generals)): ?>
+                        <?php foreach ($generals as $item): ?>
+                            <div class="list-item">
+                                <div class="list-date">
+                                    <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
+                                    <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
                                 </div>
+                                <div class="list-info">
+                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
+                                        <?php echo htmlspecialchars($item['title']); ?>
+                                    </a>
+                                    <div style="font-size:14px; color:#555; margin-top:5px; margin-bottom:8px;">
+                                        <?php echo getContentExcerpt($item['content'], 90); ?>
+                                    </div>
+
+                                    <div class="list-meta">
+                                        <i class="far fa-clock"></i>
+                                        <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
+                                    </div>
+
+                                    <?php 
+                                    $atts = getAnnouncementAttachments($pdo, $item['id']);
+                                    if (!empty($atts)): 
+                                    ?>
+                                        <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
+                                            <?php foreach ($atts as $att): ?>
+                                                <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
+                                                    <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
+                                                </a>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
+                                    อ่านต่อ <i class="fas fa-arrow-right"></i>
+                                </a>
                             </div>
-                        </a>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <div
-                        style="text-align: center; padding: 60px; border: 2px dashed #eee; background: white; border-radius: 8px; grid-column: 1 / -1;">
-                        <i class="fas fa-images" style="font-size: 50px; color: #ddd;"></i>
-                        <p style="color: #999; margin-top: 15px; font-size: 16px;">ยังไม่มีภาพกิจกรรมประชาสัมพันธ์</p>
-                    </div>
-                <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="empty-state">ยังไม่มีข้อมูลในหมวดนี้</div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Tab: Downloads -->
+            <div id="tab-download" class="tab-content" data-aos="fade-up" data-aos-delay="200">
+                <div class="list-container">
+                    <?php if (!empty($downloads)): ?>
+                        <?php foreach ($downloads as $item): ?>
+                            <div class="list-item">
+                                <div class="list-date">
+                                    <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
+                                    <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
+                                </div>
+                                <div class="list-info">
+                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
+                                        <?php echo htmlspecialchars($item['title']); ?>
+                                    </a>
+                                    <div style="font-size:14px; color:#555; margin-top:5px; margin-bottom:8px;">
+                                        <?php echo getContentExcerpt($item['content'], 90); ?>
+                                    </div>
+
+                                    <div class="list-meta">
+                                        <i class="far fa-clock"></i>
+                                        <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
+                                    </div>
+
+                                    <?php 
+                                    $atts = getAnnouncementAttachments($pdo, $item['id']);
+                                    if (!empty($atts)): 
+                                    ?>
+                                        <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
+                                            <?php foreach ($atts as $att): ?>
+                                                <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
+                                                    <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
+                                                </a>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
+                                    อ่านต่อ <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="empty-state">ยังไม่มีข้อมูลในหมวดนี้</div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Tab: Procurements -->
+            <div id="tab-procurement" class="tab-content" data-aos="fade-up" data-aos-delay="200">
+                <div class="list-container">
+                    <?php if (!empty($procurements)): ?>
+                        <?php foreach ($procurements as $item): ?>
+                            <div class="list-item">
+                                <div class="list-date">
+                                    <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
+                                    <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
+                                </div>
+                                <div class="list-info">
+                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
+                                        <?php echo htmlspecialchars($item['title']); ?>
+                                    </a>
+                                    <div style="font-size:14px; color:#555; margin-top:5px; margin-bottom:8px;">
+                                        <?php echo getContentExcerpt($item['content'], 90); ?>
+                                    </div>
+
+                                    <div class="list-meta">
+                                        <i class="far fa-clock"></i>
+                                        <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
+                                    </div>
+
+                                    <?php 
+                                    $atts = getAnnouncementAttachments($pdo, $item['id']);
+                                    if (!empty($atts)): 
+                                    ?>
+                                        <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
+                                            <?php foreach ($atts as $att): ?>
+                                                <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
+                                                    <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
+                                                </a>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
+                                    อ่านต่อ <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="empty-state">ยังไม่มีข้อมูลประกาศจัดซื้อจัดจ้าง</div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Tab: ITA -->
+            <div id="tab-ita" class="tab-content" data-aos="fade-up" data-aos-delay="200">
+                <div class="list-container">
+                    <?php if (!empty($itas)): ?>
+                        <?php foreach ($itas as $item): ?>
+                            <div class="list-item">
+                                <div class="list-date">
+                                    <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
+                                    <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
+                                </div>
+                                <div class="list-info">
+                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
+                                        <?php echo htmlspecialchars($item['title']); ?>
+                                    </a>
+                                    <div class="list-meta">
+                                        <i class="far fa-clock"></i>
+                                        <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
+                                    </div>
+
+                                    <?php 
+                                    $atts = getAnnouncementAttachments($pdo, $item['id']);
+                                    if (!empty($atts)): 
+                                    ?>
+                                        <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
+                                            <?php foreach ($atts as $att): ?>
+                                                <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
+                                                    <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
+                                                </a>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
+                                    อ่านต่อ <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="empty-state">ยังไม่มีข้อมูลประกาศ ITA</div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </section>
