@@ -741,10 +741,10 @@ footer {
         grid-template-columns: 1fr;
     }
     .sidebar-left {
-        order: 2;
+        order: 1;
     }
     .main-right {
-        order: 1;
+        order: 2;
     }
     .director-card {
         max-width: 420px;
