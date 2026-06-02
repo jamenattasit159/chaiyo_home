@@ -189,6 +189,7 @@ if (strpos($logoData, 'uploads/') !== false && file_exists($logoData)) {
     <div class="container">
         <div class="main-content-wrapper">
 
+            <!-- Sidebar Left (Streamlined & Compact) -->
             <aside class="sidebar-left" data-aos="fade-right" data-aos-delay="100">
              
                 <?php if ($director): ?>
@@ -235,111 +236,368 @@ if (strpos($logoData, 'uploads/') !== false && file_exists($logoData)) {
                
                 <div class="sidebar-banners" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
                             
-                            <a href="https://saraban.moph.go.th/archive/login.jsp" target="_blank" title="ลิงค์รูปที่ 1">
-                                <img src="uploads\m-edoc.jpg" 
-                                     alt="Banner 1" 
-                                     style="width: 100%; height: auto; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s;">
-                            </a>
+                    <a href="https://saraban.moph.go.th/archive/login.jsp" target="_blank" title="ลิงค์รูปที่ 1">
+                        <img src="uploads\m-edoc.jpg" 
+                             alt="Banner 1" 
+                             style="width: 100%; height: auto; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                    </a>
 
-                            <a href="https://atg-health.moph.go.th/payslip/" target="_blank" title="ลิงค์รูปที่ 2">
-                                <img src="uploads\m-epayslip.jpg" 
-                                     alt="Banner 2" 
-                                     style="width: 100%; height: auto; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s;">
-                            </a>
+                    <a href="https://atg-health.moph.go.th/payslip/" target="_blank" title="ลิงค์รูปที่ 2">
+                        <img src="uploads\m-epayslip.jpg" 
+                             alt="Banner 2" 
+                             style="width: 100%; height: auto; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                    </a>
 
-                            <a href="https://atg-health.moph.go.th/payslipemp/" target="_blank" title="ลิงค์รูปที่ 3">
-                                <img src="uploads\m-epayslip2.jpg" 
-                                     alt="Banner 3" 
-                                     style="width: 100%; height: auto; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s;">
-                            </a>
+                    <a href="https://atg-health.moph.go.th/payslipemp/" target="_blank" title="ลิงค์รูปที่ 3">
+                        <img src="uploads\m-epayslip2.jpg" 
+                             alt="Banner 3" 
+                             style="width: 100%; height: auto; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                    </a>
 
-                             <a href="index.php#news" target="_blank" title="ลิงค์รูปที่ 4">
-                                <img src="uploads\Untitled-1_0.jpg" 
-                                     alt="Banner 4" 
-                                     style="width: 100%; height: auto; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s;">
-                            </a>
+                    <a href="index.php#news" target="_blank" title="ลิงค์รูปที่ 4">
+                        <img src="uploads\Untitled-1_0.jpg" 
+                             alt="Banner 4" 
+                             style="width: 100%; height: auto; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                    </a>
 
-                            <!-- <a href="#" onclick="return false;" title="แบนเนอร์สถาบัน 1">
-                                <img src="uploads/1764591026_sog.jpg" 
-                                     alt="Banner 5" 
-                                     style="width: 100%; height: auto; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s;">
-                            </a>
+                </div>
 
-                            <a href="#" onclick="return false;" title="แบนเนอร์สถาบัน 2">
-                                <img src="uploads/1764591516_sog1.jpg" 
-                                     alt="Banner 6" 
-                                     style="width: 100%; height: auto; border-radius: 6px; margin-bottom: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s;">
-                            </a> -->
+            </aside>
 
+            <!-- Main Content Area: Announcements (Primary Focus above the fold) -->
+            <main class="main-right" id="news" data-aos="fade-left" data-aos-delay="200">
+                <div class="section-header" style="margin-bottom: 24px;">
+                    <span><i class="fas fa-newspaper text-primary"></i> ศูนย์ข่าวสารและบริการ</span>
+                </div>
+
+                <div class="tabs-wrapper" style="margin-bottom: 25px;">
+                    <button class="tab-btn active" onclick="openTab(event, 'tab-general')">
+                        <i class="fas fa-bullhorn"></i> ประกาศทั่วไป
+                    </button>
+                    <button class="tab-btn" onclick="openTab(event, 'tab-download')">
+                        <i class="fas fa-download"></i> ดาวน์โหลด
+                    </button>
+                    <button class="tab-btn" onclick="openTab(event, 'tab-procurement')">
+                        <i class="fas fa-shopping-cart"></i> จัดซื้อ-จัดจ้าง
+                    </button>
+                    <button class="tab-btn" onclick="openTab(event, 'tab-ita')">
+                        <i class="fas fa-balance-scale"></i> ประกาศ ITA
+                    </button>
+                </div>
+
+                <!-- Tab: General Announcements -->
+                <div id="tab-general" class="tab-content active">
+                    <div class="list-container">
+                        <?php if (!empty($generals)): ?>
+                            <?php foreach ($generals as $item): ?>
+                                <div class="list-item">
+                                    <div class="list-date">
+                                        <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
+                                        <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
+                                    </div>
+                                    <div class="list-info">
+                                        <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
+                                            <?php echo htmlspecialchars($item['title']); ?>
+                                        </a>
+                                        <div style="font-size:14px; color:#555; margin-top:5px; margin-bottom:8px;">
+                                            <?php echo getContentExcerpt($item['content'], 90); ?>
+                                        </div>
+
+                                        <div class="list-meta">
+                                            <i class="far fa-clock"></i>
+                                            <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
+                                        </div>
+
+                                        <?php 
+                                        $atts = getAnnouncementAttachments($pdo, $item['id']);
+                                        if (!empty($atts)): 
+                                        ?>
+                                            <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
+                                                <?php foreach ($atts as $att): ?>
+                                                    <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
+                                                        <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
+                                        อ่านต่อ <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="empty-state">ยังไม่มีข้อมูลในหมวดนี้</div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Tab: Downloads -->
+                <div id="tab-download" class="tab-content">
+                    <div class="list-container">
+                        <?php if (!empty($downloads)): ?>
+                            <?php foreach ($downloads as $item): ?>
+                                <div class="list-item">
+                                    <div class="list-date">
+                                        <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
+                                        <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
+                                    </div>
+                                    <div class="list-info">
+                                        <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
+                                            <?php echo htmlspecialchars($item['title']); ?>
+                                        </a>
+                                        <div style="font-size:14px; color:#555; margin-top:5px; margin-bottom:8px;">
+                                            <?php echo getContentExcerpt($item['content'], 90); ?>
+                                        </div>
+
+                                        <div class="list-meta">
+                                            <i class="far fa-clock"></i>
+                                            <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
+                                        </div>
+
+                                        <?php 
+                                        $atts = getAnnouncementAttachments($pdo, $item['id']);
+                                        if (!empty($atts)): 
+                                        ?>
+                                            <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
+                                                <?php foreach ($atts as $att): ?>
+                                                    <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
+                                                        <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
+                                        อ่านต่อ <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="empty-state">ยังไม่มีข้อมูลในหมวดนี้</div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Tab: Procurements -->
+                <div id="tab-procurement" class="tab-content">
+                    <div class="list-container">
+                        <?php if (!empty($procurements)): ?>
+                            <?php foreach ($procurements as $item): ?>
+                                <div class="list-item">
+                                    <div class="list-date">
+                                        <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
+                                        <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
+                                    </div>
+                                    <div class="list-info">
+                                        <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
+                                            <?php echo htmlspecialchars($item['title']); ?>
+                                        </a>
+                                        <div style="font-size:14px; color:#555; margin-top:5px; margin-bottom:8px;">
+                                            <?php echo getContentExcerpt($item['content'], 90); ?>
+                                        </div>
+
+                                        <div class="list-meta">
+                                            <i class="far fa-clock"></i>
+                                            <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
+                                        </div>
+
+                                        <?php 
+                                        $atts = getAnnouncementAttachments($pdo, $item['id']);
+                                        if (!empty($atts)): 
+                                        ?>
+                                            <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
+                                                <?php foreach ($atts as $att): ?>
+                                                    <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
+                                                        <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
+                                        อ่านต่อ <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="empty-state">ยังไม่มีข้อมูลประกาศจัดซื้อจัดจ้าง</div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Tab: ITA -->
+                <div id="tab-ita" class="tab-content">
+                    <div class="list-container">
+                        <?php if (!empty($itas)): ?>
+                            <?php foreach ($itas as $item): ?>
+                                <div class="list-item">
+                                    <div class="list-date">
+                                        <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
+                                        <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
+                                    </div>
+                                    <div class="list-info">
+                                        <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
+                                            <?php echo htmlspecialchars($item['title']); ?>
+                                        </a>
+                                        <div class="list-meta">
+                                            <i class="far fa-clock"></i>
+                                            <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
+                                        </div>
+
+                                        <?php 
+                                        $atts = getAnnouncementAttachments($pdo, $item['id']);
+                                        if (!empty($atts)): 
+                                        ?>
+                                            <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
+                                                <?php foreach ($atts as $att): ?>
+                                                    <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
+                                                        <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
+                                        อ่านต่อ <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="empty-state">ยังไม่มีข้อมูลประกาศ ITA</div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- PR Section: Widescreen Horizontal Grid Gallery (Below Main Grid) -->
+    <section class="pr-section" id="pr" style="padding: 60px 0; background: var(--white); border-top: 1px solid var(--border);">
+        <div class="container">
+            <div class="section-header" style="border-left: 6px solid var(--primary); padding-left: 20px; background: transparent; box-shadow: none; margin-bottom: 30px;">
+                <span>📸 ข่าวสารกิจกรรมประชาสัมพันธ์</span>
+            </div>
+
+            <div class="pr-list-large" data-aos="fade-up" data-aos-delay="200">
+                <?php if (!empty($pr_images)): ?>
+                    <?php foreach ($pr_images as $img): ?>
+                        <a href="uploads/files/<?php echo htmlspecialchars($img['filepath']); ?>" target="_blank"
+                            class="pr-card-large">
+                            <div class="pr-date-badge">
+                                <?php echo date('Y', strtotime($img['created_at'])); ?>
+                            </div>
+                            <div class="pr-image-wrapper-large">
+                                <img src="uploads/files/<?php echo htmlspecialchars($img['filepath']); ?>"
+                                    alt="<?php echo htmlspecialchars($img['filename']); ?>">
+                            </div>
+                            <div class="pr-content-large">
+                                <div class="pr-title-large"><?php echo htmlspecialchars($img['filename']); ?></div>
+                                <div style="font-size: 13px; color: #888;">
+                                    <i class="far fa-calendar-alt"></i> โพสต์เมื่อ:
+                                    <?php echo date('d/m/Y', strtotime($img['created_at'])); ?>
+                                </div>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div
+                        style="text-align: center; padding: 60px; border: 2px dashed #eee; background: white; border-radius: 8px; grid-column: 1 / -1;">
+                        <i class="fas fa-images" style="font-size: 50px; color: #ddd;"></i>
+                        <p style="color: #999; margin-top: 15px; font-size: 16px;">ยังไม่มีภาพกิจกรรมประชาสัมพันธ์</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secondary Widgets Panel (Bottom 3-Column horizontal cluster) -->
+    <?php
+    $counterFile = 'counter.txt';
+    if (!file_exists($counterFile)) {
+        file_put_contents($counterFile, '0');
+    }
+    $count = (int)file_get_contents($counterFile);
+    if (!isset($_SESSION['visited_before'])) {
+        $_SESSION['visited_before'] = true;
+        $count++;
+        file_put_contents($counterFile, $count);
+    }
+    $countStr = str_pad($count, 4, '0', STR_PAD_LEFT);
+    $digits = str_split($countStr);
+    ?>
+
+    <section class="bottom-widgets-section" style="padding: 60px 0; background: var(--lighter-green); border-top: 1px solid var(--border);">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+                
+                <!-- Column 1: Sub-agencies list -->
+                <div class="sidebar-box-styled" style="background: #fff; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; flex-direction: column;">
+                    <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 16px 20px; color: #fff; font-weight: 800; font-size: 16px;">
+                        <i class="fas fa-network-wired" style="margin-right: 8px;"></i> หน่วยงานในสังกัด
+                    </div>
+                    <div style="padding: 20px; font-size: 14px; line-height: 1.8; color: #334155; flex-grow: 1;">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                            <div style="display: flex; gap: 8px;"><span style="color: var(--primary); font-family: monospace; font-weight: 700;">10782</span> <span>รพ.ไชโย</span></div>
+                            <div style="display: flex; gap: 8px;"><span style="color: var(--primary); font-family: monospace; font-weight: 700;">01368</span> <span>รพ.สต.จรเข้ร้อง</span></div>
+                            <div style="display: flex; gap: 8px;"><span style="color: var(--primary); font-family: monospace; font-weight: 700;">01369</span> <span>รพ.สต.ไชยภูมิ</span></div>
+                            <div style="display: flex; gap: 8px;"><span style="color: var(--primary); font-family: monospace; font-weight: 700;">01370</span> <span>รพ.สต.ชัยฤทธิ์</span></div>
+                            <div style="display: flex; gap: 8px;"><span style="color: var(--primary); font-family: monospace; font-weight: 700;">01371</span> <span>รพ.สต.เทวราช</span></div>
+                            <div style="display: flex; gap: 8px;"><span style="color: var(--primary); font-family: monospace; font-weight: 700;">01372</span> <span>รพ.สต.ราชสถิตย์</span></div>
+                            <div style="display: flex; gap: 8px;"><span style="color: var(--primary); font-family: monospace; font-weight: 700;">01373</span> <span>รพ.สต.หลักฟ้า</span></div>
+                            <div style="display: flex; gap: 8px;"><span style="color: var(--primary); font-family: monospace; font-weight: 700;">01374</span> <span>รพ.สต.ชะไว</span></div>
+                            <div style="display: flex; gap: 8px;"><span style="color: var(--primary); font-family: monospace; font-weight: 700;">01375</span> <span>รพ.สต.บ้านเบิก</span></div>
+                            <div style="display: flex; gap: 8px;"><span style="color: var(--primary); font-family: monospace; font-weight: 700;">01376</span> <span>รพ.สต.ตรีณรงค์</span></div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- 2 แบนเนอร์ใหม่: หน่วยงานในสังกัด และ จำนวนผู้เข้าชม -->
-                        <?php
-                        $counterFile = 'counter.txt';
-                        if (!file_exists($counterFile)) {
-                            file_put_contents($counterFile, '0');
-                        }
-                        $count = (int)file_get_contents($counterFile);
-                        if (!isset($_SESSION['visited_before'])) {
-                            $_SESSION['visited_before'] = true;
-                            $count++;
-                            file_put_contents($counterFile, $count);
-                        }
-                        $countStr = str_pad($count, 4, '0', STR_PAD_LEFT);
-                        $digits = str_split($countStr);
-                        ?>
-                        
-                        <div class="sidebar-box-styled" style="background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; margin-top: 20px;">
-                            <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 12px 16px; color: #fff; font-weight: 700; font-size: 16px;">
-                                หน่วยงานในสังกัด
-                            </div>
-                            <div style="padding: 16px; font-size: 14px; line-height: 1.8; color: #334155;">
-                                <div style="display: flex; gap: 8px; margin-bottom: 8px;"><span style="color: #64748b; font-family: monospace;">10782</span> <span>โรงพยาบาลไชโย</span></div>
-                                <div style="display: flex; gap: 8px; margin-bottom: 8px;"><span style="color: #64748b; font-family: monospace;">01368</span> <span>รพ.สต.จรเข้ร้อง</span></div>
-                                <div style="display: flex; gap: 8px; margin-bottom: 8px;"><span style="color: #64748b; font-family: monospace;">01369</span> <span>รพ.สต.ไชยภูมิ</span></div>
-                                <div style="display: flex; gap: 8px; margin-bottom: 8px;"><span style="color: #64748b; font-family: monospace;">01370</span> <span>รพ.สต.ชัยฤทธิ์</span></div>
-                                <div style="display: flex; gap: 8px; margin-bottom: 8px;"><span style="color: #64748b; font-family: monospace;">01371</span> <span>รพ.สต.เทวราช</span></div>
-                                <div style="display: flex; gap: 8px; margin-bottom: 8px;"><span style="color: #64748b; font-family: monospace;">01372</span> <span>รพ.สต.ราชสถิตย์</span></div>
-                                <div style="display: flex; gap: 8px; margin-bottom: 8px;"><span style="color: #64748b; font-family: monospace;">01373</span> <span>รพ.สต.หลักฟ้า</span></div>
-                                <div style="display: flex; gap: 8px; margin-bottom: 8px;"><span style="color: #64748b; font-family: monospace;">01374</span> <span>รพ.สต.ชะไว</span></div>
-                                <div style="display: flex; gap: 8px; margin-bottom: 8px;"><span style="color: #64748b; font-family: monospace;">01375</span> <span>รพ.สต.บ้านเบิก</span></div>
-                                <div style="display: flex; gap: 8px; margin-bottom: 0;"><span style="color: #64748b; font-family: monospace;">01376</span> <span>รพ.สต.ตรีณรงค์</span></div>
-                            </div>
+                <!-- Column 2: Visitor counter & Quick Info -->
+                <div class="sidebar-box-styled" style="background: #fff; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 16px 20px; color: #fff; font-weight: 800; font-size: 16px;">
+                            <i class="fas fa-users" style="margin-right: 8px;"></i> สถิติผู้เข้าชมเว็บไซต์
                         </div>
-
-                        <div class="sidebar-box-styled" style="background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; margin-top: 20px;">
-                            <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 12px 16px; color: #fff; font-weight: 700; font-size: 16px;">
-                                จำนวนผู้เข้าชม
-                            </div>
-                            <div style="padding: 16px; display: flex; gap: 4px; justify-content: flex-start; align-items: center;">
+                        <div style="padding: 20px 20px 10px 20px;">
+                            <div style="display: flex; gap: 6px; justify-content: flex-start; align-items: center; margin-bottom: 15px;">
                                 <?php foreach ($digits as $digit): ?>
-                                    <span style="background-color: #1e293b; color: #fff; font-family: 'Outfit', monospace; font-size: 22px; font-weight: 700; padding: 4px 10px; border-radius: 4px; border: 1px solid #0f172a; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
+                                    <span style="background-color: #0f172a; color: #fff; font-family: 'Outfit', monospace; font-size: 24px; font-weight: 700; padding: 6px 12px; border-radius: 6px; border: 1px solid #1e293b; box-shadow: inset 0 2px 4px rgba(0,0,0,0.8); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
                                         <?php echo $digit; ?>
                                     </span>
                                 <?php endforeach; ?>
                             </div>
                         </div>
-               
-                <div class="sidebar-box" style="margin-top: 20px;">
-                    <h3><i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i>ติดต่อเรา</h3>
-                    <div class="contact-info">
+                    </div>
+                    
+                    <div style="padding: 0 20px 20px 20px; border-top: 1px dashed #e2e8f0; pt: 15px;">
+                        <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 8px; color: var(--text);"><i class="fas fa-address-book text-primary"></i> ข้อมูลติดต่อเร่งด่วน</h4>
+                        <?php if ($orgInfo && $orgInfo['phone']): ?>
+                            <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 4px;"><strong>โทรศัพท์:</strong> <?php echo sanitize($orgInfo['phone']); ?></p>
+                        <?php endif; ?>
+                        <?php if ($orgInfo && $orgInfo['email']): ?>
+                            <p style="font-size: 13px; color: var(--text-gray);"><strong>อีเมล:</strong> <?php echo sanitize($orgInfo['email']); ?></p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Column 3: Contact & Google Map -->
+                <div class="sidebar-box-styled" style="background: #fff; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; flex-direction: column;">
+                    <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 16px 20px; color: #fff; font-weight: 800; font-size: 16px;">
+                        <i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i> แผนที่ & ที่ตั้งหน่วยงาน
+                    </div>
+                    <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                         <?php if ($orgInfo && $orgInfo['address']): ?>
-                            <div style="margin-bottom: 15px;">
-                                <p style="margin-bottom: 5px; font-weight: bold; color: #4b5563;">ที่อยู่:</p>
-                                <p style="color: #6b7280; line-height: 1.6;"><?php echo sanitize($orgInfo['address']); ?>
-                                </p>
-                            </div>
+                            <p style="font-size: 13px; color: var(--text-gray); line-height: 1.6; margin-bottom: 12px;">
+                                <?php echo sanitize($orgInfo['address']); ?>
+                            </p>
                         <?php endif; ?>
 
                         <?php if (!empty($orgInfo['google_map'])): ?>
                             <div class="map-container"
-                                style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; border: 1px solid #e5e7eb; margin-top: 15px;">
-                                <?php
-                                // แสดง iframe โดยตรง (ไม่ต้อง sanitize เพราะเป็น HTML จาก Admin)
-                                echo $orgInfo['google_map'];
-                                ?>
+                                style="position: relative; padding-bottom: 50%; height: 0; overflow: hidden; border-radius: 12px; border: 1px solid #e5e7eb; box-shadow: var(--shadow-sm);">
+                                <?php echo $orgInfo['google_map']; ?>
                                 <style>
-                                    /* บังคับให้ iframe เต็มพื้นที่ container */
                                     .map-container iframe {
                                         position: absolute;
                                         top: 0;
@@ -352,256 +610,15 @@ if (strpos($logoData, 'uploads/') !== false && file_exists($logoData)) {
                             </div>
                             <div style="text-align: center; margin-top: 8px;">
                                 <a href="https://www.google.com/maps" target="_blank"
-                                    style="font-size: 12px; color: var(--primary); text-decoration: none;">
+                                    style="font-size: 12px; color: var(--primary); text-decoration: none; font-weight: bold;">
                                     <i class="fas fa-external-link-alt"></i> เปิดใน Google Maps
                                 </a>
                             </div>
                         <?php endif; ?>
-                        
                     </div>
-                    </div>
-
-            </aside>
-
-            <main class="main-right" id="pr">
-                <div class="section-header">
-                    <span>📸 ข่าวประชาสัมพันธ์</span>
                 </div>
 
-                <div class="pr-list-large" data-aos="fade-left" data-aos-delay="200">
-                    <?php if (!empty($pr_images)): ?>
-                        <?php foreach ($pr_images as $img): ?>
-                            <a href="uploads/files/<?php echo htmlspecialchars($img['filepath']); ?>" target="_blank"
-                                class="pr-card-large">
-                                <div class="pr-date-badge">
-                                    <?php echo date('Y', strtotime($img['created_at'])); ?>
-                                </div>
-                                <div class="pr-image-wrapper-large">
-                                    <img src="uploads/files/<?php echo htmlspecialchars($img['filepath']); ?>"
-                                        alt="<?php echo htmlspecialchars($img['filename']); ?>">
-                                </div>
-                                <div class="pr-content-large">
-                                    <div class="pr-title-large"><?php echo htmlspecialchars($img['filename']); ?></div>
-                                    <div style="font-size: 13px; color: #888;">
-                                        <i class="far fa-calendar-alt"></i> โพสต์เมื่อ:
-                                        <?php echo date('d/m/Y', strtotime($img['created_at'])); ?>
-                                    </div>
-                                </div>
-                            </a>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div
-                            style="text-align: center; padding: 60px; border: 2px dashed #eee; background: white; border-radius: 8px;">
-                            <i class="fas fa-images" style="font-size: 50px; color: #ddd;"></i>
-                            <p style="color: #999; margin-top: 15px; font-size: 16px;">ยังไม่มีภาพกิจกรรมประชาสัมพันธ์</p>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </main>
-        </div>
-    </div>
-
-    <section class="announcements-section" id="news" style="background: #fff; padding: 60px 0;">
-        <div class="container">
-            <h2 class="section-title-orange" data-aos="fade-up">
-                <i class="fas fa-newspaper"></i> ศูนย์ข่าวสารและบริการ
-            </h2>
-
-            <div class="tabs-wrapper" data-aos="fade-up" data-aos-delay="100">
-                <button class="tab-btn active" onclick="openTab(event, 'tab-general')">
-                    <i class="fas fa-bullhorn"></i> ประกาศทั่วไป
-                </button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-download')">
-                    <i class="fas fa-download"></i> ดาวน์โหลด
-                </button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-procurement')">
-                    <i class="fas fa-shopping-cart"></i> จัดซื้อ-จัดจ้าง
-                </button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-ita')">
-                    <i class="fas fa-balance-scale"></i> ประกาศ ITA
-                </button>
             </div>
-
-            <div id="tab-general" class="tab-content active" data-aos="fade-up" data-aos-delay="200">
-                <div class="list-container">
-                    <?php if (!empty($generals)): ?>
-                        <?php foreach ($generals as $item): ?>
-                            <div class="list-item">
-                                <div class="list-date">
-                                    <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
-                                    <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
-                                </div>
-                                <div class="list-info">
-                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
-                                        <?php echo htmlspecialchars($item['title']); ?>
-                                    </a>
-                                    <div style="font-size:14px; color:#555; margin-top:5px; margin-bottom:8px;">
-                                        <?php echo getContentExcerpt($item['content'], 90); ?>
-                                    </div>
-
-                                    <div class="list-meta">
-                                        <i class="far fa-clock"></i>
-                                        <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
-                                    </div>
-
-                                    <?php 
-                                    $atts = getAnnouncementAttachments($pdo, $item['id']);
-                                    if (!empty($atts)): 
-                                    ?>
-                                        <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
-                                            <?php foreach ($atts as $att): ?>
-                                                <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
-                                                    <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
-                                                </a>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
-                                    อ่านต่อ <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="empty-state">ยังไม่มีข้อมูลในหมวดนี้</div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <div id="tab-download" class="tab-content" data-aos="fade-up" data-aos-delay="200">
-                <div class="list-container">
-                    <?php if (!empty($downloads)): ?>
-                        <?php foreach ($downloads as $item): ?>
-                            <div class="list-item">
-                                <div class="list-date">
-                                    <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
-                                    <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
-                                </div>
-                                <div class="list-info">
-                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
-                                        <?php echo htmlspecialchars($item['title']); ?>
-                                    </a>
-                                    <div style="font-size:14px; color:#555; margin-top:5px; margin-bottom:8px;">
-                                        <?php echo getContentExcerpt($item['content'], 90); ?>
-                                    </div>
-
-                                    <div class="list-meta">
-                                        <i class="far fa-clock"></i>
-                                        <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
-                                    </div>
-
-                                    <?php 
-                                    $atts = getAnnouncementAttachments($pdo, $item['id']);
-                                    if (!empty($atts)): 
-                                    ?>
-                                        <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
-                                            <?php foreach ($atts as $att): ?>
-                                                <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
-                                                    <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
-                                                </a>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
-                                    อ่านต่อ <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="empty-state">ยังไม่มีข้อมูลในหมวดนี้</div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <div id="tab-procurement" class="tab-content" data-aos="fade-up" data-aos-delay="200">
-                <div class="list-container">
-                    <?php if (!empty($procurements)): ?>
-                        <?php foreach ($procurements as $item): ?>
-                            <div class="list-item">
-                                <div class="list-date">
-                                    <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
-                                    <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
-                                </div>
-                                <div class="list-info">
-                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
-                                        <?php echo htmlspecialchars($item['title']); ?>
-                                    </a>
-                                    <div style="font-size:14px; color:#555; margin-top:5px; margin-bottom:8px;">
-                                        <?php echo getContentExcerpt($item['content'], 90); ?>
-                                    </div>
-
-                                    <div class="list-meta">
-                                        <i class="far fa-clock"></i>
-                                        <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
-                                    </div>
-
-                                    <?php 
-                                    $atts = getAnnouncementAttachments($pdo, $item['id']);
-                                    if (!empty($atts)): 
-                                    ?>
-                                        <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
-                                            <?php foreach ($atts as $att): ?>
-                                                <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
-                                                    <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
-                                                </a>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
-                                    อ่านต่อ <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="empty-state">ยังไม่มีข้อมูลประกาศจัดซื้อจัดจ้าง</div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <div id="tab-ita" class="tab-content" data-aos="fade-up" data-aos-delay="200">
-                <div class="list-container">
-                    <?php if (!empty($itas)): ?>
-                        <?php foreach ($itas as $item): ?>
-                            <div class="list-item">
-                                <div class="list-date">
-                                    <span class="day"><?php echo date('d', strtotime($item['created_at'])); ?></span>
-                                    <span class="month"><?php echo date('M', strtotime($item['created_at'])); ?></span>
-                                </div>
-                                <div class="list-info">
-                                    <a href="announcement.php?id=<?php echo $item['id']; ?>" class="list-title">
-                                        <?php echo htmlspecialchars($item['title']); ?>
-                                    </a>
-                                    <div class="list-meta">
-                                        <i class="far fa-clock"></i>
-                                        <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
-                                    </div>
-
-                                    <?php 
-                                    $atts = getAnnouncementAttachments($pdo, $item['id']);
-                                    if (!empty($atts)): 
-                                    ?>
-                                        <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:5px;">
-                                            <?php foreach ($atts as $att): ?>
-                                                <a href="uploads/files/<?php echo htmlspecialchars($att['file_path']); ?>" target="_blank" style="display:inline-block; margin-right:10px; font-size:13px; color:#059669; text-decoration:none;">
-                                                    <i class="fas fa-paperclip"></i> <?php echo htmlspecialchars($att['file_name'] ?: 'File'); ?>
-                                                </a>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <a href="announcement.php?id=<?php echo $item['id']; ?>" class="btn-read">
-                                    อ่านต่อ <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="empty-state">ยังไม่มีข้อมูลประกาศ ITA</div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
         </div>
     </section>
 
