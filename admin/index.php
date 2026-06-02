@@ -36,11 +36,86 @@ $page = $_GET['page'] ?? 'dashboard';
       @theme {
         --font-sans: 'Sarabun', 'Outfit', sans-serif;
         --font-display: 'Outfit', 'Sarabun', sans-serif;
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
       }
       h1, h2, h3, h4, h5, h6, .stat-value, .stat-title, .menu-title, .badge, .font-display {
         font-family: var(--font-display);
         font-weight: 800;
         letter-spacing: -0.02em;
+      }
+      
+      /* Global Easing & Animations */
+      @keyframes fadeSlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade-slide-up {
+        animation: fadeSlideUp 500ms var(--ease-out-expo) forwards;
+      }
+
+      /* Sidebar list micro-interaction */
+      .menu li a {
+        transition: all 250ms var(--ease-out-quart);
+      }
+      .menu li a:hover {
+        transform: translateX(6px);
+      }
+      .menu li a:active {
+        transform: scale(0.97) translateX(6px);
+      }
+
+      /* Global Button Micro-interactions */
+      .btn {
+        transition: all 200ms var(--ease-out-quart) !important;
+      }
+      .btn:active {
+        transform: scale(0.96) !important;
+      }
+
+      /* Global Form Inputs Glow Focus */
+      .input, .textarea, .select, .checkbox, .radio {
+        transition: all 200ms var(--ease-out-quart) !important;
+      }
+      .input:focus, .textarea:focus, .select:focus {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(var(--color-primary), 0.1) !important;
+      }
+
+      /* Staggered Cards Entrance */
+      @keyframes cardEntrance {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      .stagger-card {
+        opacity: 0;
+        animation: cardEntrance 600ms var(--ease-out-expo) forwards;
+        animation-delay: calc(var(--stagger, 0) * 50ms);
+      }
+
+      /* Prefers Reduced Motion Compatibility */
+      @media (prefers-reduced-motion: reduce) {
+        *, ::before, ::after {
+          animation-delay: 0s !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-delay: 0s !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+          transform: none !important;
+        }
       }
     </style>
 </head>
@@ -117,16 +192,18 @@ $page = $_GET['page'] ?? 'dashboard';
 
             <!-- พื้นที่หน้าย่อย (Sub-pages Viewport) -->
             <main class="p-6 flex-1 overflow-y-auto max-w-[100vw]">
-                <?php
-                // โหลดไฟล์หน้าย่อยอย่างปลอดภัย
-                $pagePath = __DIR__ . "/pages/{$page}.php";
+                <div class="animate-fade-slide-up">
+                    <?php
+                    // โหลดไฟล์หน้าย่อยอย่างปลอดภัย
+                    $pagePath = __DIR__ . "/pages/{$page}.php";
 
-                if (file_exists($pagePath)) {
-                    include $pagePath;
-                } else {
-                    include __DIR__ . "/pages/dashboard.php";
-                }
-                ?>
+                    if (file_exists($pagePath)) {
+                        include $pagePath;
+                    } else {
+                        include __DIR__ . "/pages/dashboard.php";
+                    }
+                    ?>
+                </div>
             </main>
         </div>
 

@@ -74,11 +74,67 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       @theme {
         --font-sans: 'Sarabun', 'Outfit', sans-serif;
         --font-display: 'Outfit', 'Sarabun', sans-serif;
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
       }
       h1, h2, h3, h4, h5, h6, .stat-value, .stat-title, .menu-title, .badge, .font-display {
         font-family: var(--font-display);
         font-weight: 800;
         letter-spacing: -0.02em;
+      }
+
+      /* Global Easing & Animations */
+      @keyframes authCardEntrance {
+        from {
+          opacity: 0;
+          transform: translateY(24px) scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      .animate-auth-card {
+        animation: authCardEntrance 600ms var(--ease-out-expo) forwards;
+      }
+
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-6px); }
+        40%, 80% { transform: translateX(6px); }
+      }
+      .animate-shake {
+        animation: shake 400ms cubic-bezier(0.25, 0.8, 0.25, 1) both;
+      }
+
+      /* Global Input Focus */
+      .input {
+        transition: all 200ms var(--ease-out-quart) !important;
+      }
+      .input:focus {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(var(--color-primary), 0.1) !important;
+      }
+
+      /* Global Button */
+      .btn {
+        transition: all 200ms var(--ease-out-quart) !important;
+      }
+      .btn:active {
+        transform: scale(0.96) !important;
+      }
+
+      /* Prefers Reduced Motion Compatibility */
+      @media (prefers-reduced-motion: reduce) {
+        *, ::before, ::after {
+          animation-delay: 0s !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-delay: 0s !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+          transform: none !important;
+        }
       }
     </style>
 </head>
@@ -100,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
     <div class="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
 
-    <div class="card w-full max-w-md bg-base-100 shadow-2xl rounded-2xl overflow-hidden border border-base-200 relative z-10 transition-all hover:shadow-primary/10">
+    <div class="card w-full max-w-md bg-base-100 shadow-2xl rounded-2xl overflow-hidden border border-base-200 relative z-10 transition-all hover:shadow-primary/10 animate-auth-card">
         <div class="card-body p-8 flex flex-col items-center">
             
             <!-- Logo / Header -->
@@ -114,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             <!-- Error Alert -->
             <?php if ($error): ?>
-                <div class="alert alert-error gap-2 py-3 px-4 rounded-xl text-sm font-semibold mb-5 text-white shadow-md border-none">
+                <div class="alert alert-error gap-2 py-3 px-4 rounded-xl text-sm font-semibold mb-5 text-white shadow-md border-none animate-shake">
                     <i class="fa-solid fa-circle-exclamation"></i>
                     <span><?php echo $error; ?></span>
                 </div>

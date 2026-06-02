@@ -40,7 +40,7 @@ try {
 
 <!-- สถิติแบบพรีเมียม -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 w-full">
-    <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow">
+    <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow stagger-card" style="--stagger: 1;">
         <div class="card-body p-6 flex flex-row items-center justify-between">
             <div>
                 <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">ภาพแบนเนอร์</span>
@@ -51,7 +51,7 @@ try {
         </div>
     </div>
     
-    <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow">
+    <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow stagger-card" style="--stagger: 2;">
         <div class="card-body p-6 flex flex-row items-center justify-between">
             <div>
                 <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">คณะผู้บริหาร</span>
@@ -62,7 +62,7 @@ try {
         </div>
     </div>
     
-    <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow">
+    <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow stagger-card" style="--stagger: 3;">
         <div class="card-body p-6 flex flex-row items-center justify-between">
             <div>
                 <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">ประกาศเผยแพร่</span>
@@ -73,7 +73,7 @@ try {
         </div>
     </div>
     
-    <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow">
+    <div class="card bg-base-100 shadow-sm border border-base-200 hover:shadow-md transition-shadow stagger-card" style="--stagger: 4;">
         <div class="card-body p-6 flex flex-row items-center justify-between">
             <div>
                 <span class="text-base-content/50 font-bold text-xs uppercase tracking-wider block">ไฟล์ในระบบ</span>
@@ -86,7 +86,7 @@ try {
 </div>
 
 <!-- การกระทำด่วน (Quick Actions) ดีไซน์พรีเมียม -->
-<div class="card bg-gradient-to-r from-primary to-secondary text-primary-content shadow-xl mb-8 border-none overflow-hidden relative">
+<div class="card bg-gradient-to-r from-primary to-secondary text-primary-content shadow-xl mb-8 border-none overflow-hidden relative stagger-card" style="--stagger: 5;">
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent)] pointer-events-none"></div>
     <div class="card-body p-8 relative z-10">
         <h2 class="card-title text-2xl font-black flex items-center gap-2"><i class="fa-solid fa-bolt text-warning animate-bounce"></i> ทางลัดการจัดการข้อมูล (Quick Links)</h2>
@@ -102,7 +102,7 @@ try {
 <!-- ตารางแสดงรายการล่าสุดแบบสองฝั่ง -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     <!-- ประกาศล่าสุด -->
-    <div class="card bg-base-100 shadow-xl border border-base-200">
+    <div class="card bg-base-100 shadow-xl border border-base-200 stagger-card" style="--stagger: 6;">
         <div class="card-body p-6 flex flex-col justify-between">
             <div>
                 <h2 class="card-title text-lg font-bold text-base-content flex items-center gap-2 mb-4 border-b border-base-200 pb-4">
@@ -131,7 +131,7 @@ try {
     </div>
 
     <!-- ไฟล์ล่าสุด -->
-    <div class="card bg-base-100 shadow-xl border border-base-200">
+    <div class="card bg-base-100 shadow-xl border border-base-200 stagger-card" style="--stagger: 7;">
         <div class="card-body p-6 flex flex-col justify-between">
             <div>
                 <h2 class="card-title text-lg font-bold text-base-content flex items-center gap-2 mb-4 border-b border-base-200 pb-4">
